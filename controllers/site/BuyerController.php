@@ -19,6 +19,7 @@ class BuyerController
 	{
 		$this->validator = new Validator();
 		$this->validator->set_validator(new YBValidator);
+		$this->validator->check_auth();
 
         $roles = ['admin', 'manager', 'realtor'];
         $this->validator->check_access($roles);

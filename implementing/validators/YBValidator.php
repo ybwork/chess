@@ -122,20 +122,25 @@ class YBValidator implements IValidator
     		'realtor' => 4
     	];
 
-        if (!isset($_SESSION['user'])) {
-            header('Location: /login');
-        } else {
-			$arr_compare_roles = [];
-	    	foreach ($roles as $key => $role) {
-	    		$arr_compare_roles[$key] = $roles_values[$role];
-	    	}
+		$arr_compare_roles = [];
+    	foreach ($roles as $key => $role) {
+    		$arr_compare_roles[$key] = $roles_values[$role];
+    	}
 
-			if (in_array($_SESSION['role_id'], $arr_compare_roles)) {
-				return true;
-			} else {
-				header('Location: /');
-			}
-        }
+		if (in_array($_SESSION['role_id'], $arr_compare_roles)) {
+			return true;
+		} else {
+			header('Location: /');
+		}
+    }
+
+    public function check_auth()
+    {
+    	if (isset($_SESSION['user'])) {
+    		return true;
+    	} else {
+    		header('Location: /login');
+    	}
     }
 
 	public function validate(array $fields, array $rules): array

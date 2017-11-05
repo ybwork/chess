@@ -14,4 +14,5 @@ interface IValidator
 	public function check_request($request);
 	public function check_access(array $roles);
 	public function validate(array $fields, array $rules);
+	public function check_auth();
 }

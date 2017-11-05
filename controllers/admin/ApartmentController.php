@@ -35,6 +35,7 @@ class ApartmentController
 	{
 		$this->validator = new Validator();
 		$this->validator->set_validator(new YBValidator);
+		$this->validator->check_auth();
 
         $roles = ['admin'];
         $this->validator->check_access($roles);
@@ -97,7 +98,15 @@ class ApartmentController
 		$data['windows'] = $this->helper->get_select2_value('window', $_POST);
 		$data['glazings'] = $this->helper->get_checkbox_value('glazing', $_POST);
 		
-		$this->model->create($data);
+		$apartment_exists = $this->model->check_exists($data['num']);
+		if ($apartment_exists) {
+			header('HTTP/1.0 400 Bad request', http_response_code(400));
+			$response['message'] = 'Квартира с таким номером уже существует';
+			echo json_encode($response);
+			die(); 
+		} else {
+			$this->model->create($data);
+		}
 	}
 
 	public function edit()

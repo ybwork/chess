@@ -52,4 +52,9 @@ class Apartment
 	{
 		return $this->model->count();
 	}
+
+	public function check_exists(int $apartment_num)
+	{
+		return $this->model->check_exists($apartment_num);
+	}
 }

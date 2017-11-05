@@ -59,6 +59,11 @@ class Validator
     	return $this->validator->check_access($roles);
     }
 
+    public function check_auth()
+    {
+    	return $this->validator->check_auth();
+    }
+
 	public function validate(array $fields, array $rules)
 	{
 		return $this->validator->validate($fields, $rules);

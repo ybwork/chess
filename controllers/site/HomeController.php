@@ -15,13 +15,14 @@ class HomeController
 	{
 		$this->validator = new Validator();
 		$this->validator->set_validator(new YBValidator);
+		$this->validator->check_auth();
 
 		$this->model = new Apartment();
 		$this->model->set_model(new MySQLApartmentModel());
 	}
 
 	public function index()
-	{
+	{		
 		$apartments = $this->model->get_all();
 		$floors_types_aparts = $this->model->get_floors_types_aparts();
 		$general_info_apartments = $this->model->get_general_info_apartments();

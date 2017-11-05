@@ -12,4 +12,5 @@ interface IApartmentModel
    public function update(array $data);
    public function delete(int $id);
    public function count();
+   public function check_exists(int $apartment_num);
 }

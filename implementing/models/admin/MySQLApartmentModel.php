@@ -328,25 +328,21 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
-	public function change_status(array $data, string $type, int $status)
+	public function check_exists(int $apartment_num)
 	{
-        foreach ($data["$type"] as $user_apartment) {
-        	$db = \DB::get_connection();
-            $sql = "UPDATE apartments a SET a.status = $status WHERE a.id = :user_apartment";
-            $query = $db->prepare($sql);
-            $query->bindParam(':user_apartment', $user_apartment);
+		$db = $this->db_connection->get_connection();
 
-            if ($query->execute()) {
-                $result = 1;
-            } else {
-                $result = 0;
-            }
-        }
+		$sql = 'SELECT num FROM apartments WHERE num = :num';
 
-        if ($result) {
-        	return true;
-        } else {
-        	return false;
-        }
+		$query = $db->prepare($sql);
+
+		$query->bindValue(':num', $apartment_num, \PDO::PARAM_INT);
+
+		if ($query->execute()) {
+			return $query->fetch(\PDO::FETCH_ASSOC);
+		} else {
+			http_response_code(500);
+			$this->validator->check_response('ajax');
+		}
 	}
 }
