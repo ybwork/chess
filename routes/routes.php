@@ -62,13 +62,14 @@ return array(
 	'admin/apartment/create' => 'controllers\admin\Apartment/create',
 	'admin/apartments' => 'controllers\admin\Apartment/index',
 
+	// Dealings
+	'admin/dealings' => 'controllers\admin\Deal/index',
+
 	// Buyers
 	'buyer/show' => 'controllers\site\Buyer/show',
 
 	// Site
-	'apartments/actualize' => 'controllers\site\Apartment/actualize',
-	'apartments/auto-actualize' => 'controllers\site\Cron/auto_actualize',
-	'apartment/lead' => 'controllers\site\Apartment/lead',
+	'apartment/buy' => 'controllers\site\Apartment/buy',
 	'apartment/reserve' => 'controllers\site\Apartment/reserve',
 	'apartment/withdraw-reserve' => 'controllers\site\Apartment/withdraw_reserve',
 	'apartment/auto-withdraw-reserve' => 'controllers\site\Cron/auto_withdraw_reserve',

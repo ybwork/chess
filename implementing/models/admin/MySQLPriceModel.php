@@ -3,9 +3,9 @@
 namespace implementing\models\admin;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\admin\IPriceModel;
 
 class MySQLPriceModel implements IPriceModel

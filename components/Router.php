@@ -2,7 +2,7 @@
 
 namespace components;
 
-use \routers\IRouter;
+use \interfaces\routers\IRouter;
 
 class Router
 {

@@ -3,11 +3,11 @@
 namespace controllers\admin;
 
 use \components\Paginator;
-use \paginators\YBPaginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\admin\Price;
 use \implementing\models\admin\MySQLPriceModel;
 

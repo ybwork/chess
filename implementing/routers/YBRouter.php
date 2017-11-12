@@ -1,6 +1,8 @@
 <?php
 
-namespace routers;
+namespace implementing\routers;
+
+use \interfaces\routers\IRouter;
 
 class YBRouter implements IRouter
 {

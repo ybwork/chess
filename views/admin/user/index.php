@@ -4,16 +4,6 @@
     <div class="main__content">
         <form class="admin__add-user-body common-ajax-form" action="/admin/user/create" method="POST">
             <div class="main__content-input">
-                <label>Логин:</label>
-                <input type="text" name="login" value="">
-            </div>
-            
-            <div class="main__content-input">
-                <label>Пароль:</label>
-                <input type="password" name="password" value="">
-            </div>
-
-            <div class="main__content-input">
                 <label>Роль:</label>
                 <select name="role">
                     <option value="0"></option>
@@ -26,29 +16,33 @@
             </div>
 
             <div class="main__content-input">
-                <label>Фамилия:</label>
-                <input type="text" name="surname" value="">
+                <label>Логин:</label>
+                <input type="text" name="login" value="">
             </div>
-           
+
             <div class="main__content-input">
                 <label>Имя:</label>
                 <input type="text" name="name" value="">
             </div>
 
             <div class="main__content-input">
+                <label>Фамилия:</label>
+                <input type="text" name="surname" value="">
+            </div>
+           
+            <div class="main__content-input">
                 <label>Отчество:</label>
                 <input type="text" name="patronymic" value="">
             </div>
 
             <div class="main__content-input">
-                <label>Квартиры:</label>
-                <select class="js-example-basic-multiple" multiple="multiple" name="apartments[]">
-                    <?php foreach ($available_apartments as $available_apartment): ?>
-                        <option value="<?php print $available_apartment['id'] ?>">
-                            <?php print $available_apartment['num'] ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <label>Телефон:</label>
+                <input type="text" name="phone" value="">
+            </div>
+
+            <div class="main__content-input">
+                <label>Пароль:</label>
+                <input type="password" name="password" value="">
             </div>
         
             <div class="main__content-button align-right">
@@ -103,18 +97,12 @@
                         </select>
                         <label>Фамилия:</label>
                         <input type="text" name="surname" value="<?php print $user['surname']; ?>">
+                        <label>Телефон:</label>
+                        <input type="text" name="phone" value="<?php print $user['phone']; ?>">
                         <label>Имя:</label>
                         <input type="text" name="name" value="<?php print $user['name']; ?>">
                         <label>Отчество:</label>
                         <input type="text" name="patronymic" value="<?php print $user['patronymic']; ?>">
-                        <label>Квартиры:</label>
-                        <select class="js-example-basic-multiple" multiple="multiple" name="apartments[]">
-                            <?php foreach ($available_apartments as $available_apartment): ?>
-                                <option value="<?php print $available_apartment['id'] ?>">
-                                    <?php print $available_apartment['num'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
                         <button type="submit">Обновить</button>
                     </form>
                     <br>
@@ -127,8 +115,8 @@
             </tbody>
         </table>
 
-        <?php if($total > 20): ?>
-            <?php print $paginator->get(); ?>
+        <?php if($total > 2): ?>
+            <?php print $this->paginator->get(); ?>
         <?php endif; ?>
     </div>
 </div>

@@ -3,9 +3,9 @@
 namespace implementing\models\admin;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\admin\IWindowModel;
 
 class MySQLWindowModel implements IWindowModel
@@ -42,9 +42,12 @@ class MySQLWindowModel implements IWindowModel
 	{
 		$db = $this->db_connection->get_connection();
 
-		$sql = "SELECT id, name FROM windows ORDER BY id DESC LIMIT $offset, $limit";
+		$sql = "SELECT id, name FROM windows ORDER BY id DESC LIMIT :offset, :limit";
 
        	$query = $db->prepare($sql);
+
+       	$query->bindValue(':offset', $offset, \PDO::PARAM_INT);
+		$query->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
 		if ($query->execute()) {
 			return $query->fetchAll(\PDO::FETCH_ASSOC);

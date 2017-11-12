@@ -3,22 +3,19 @@
 namespace controllers\site;
 
 use \components\Paginator;
-use \paginators\YBPaginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\site\Apartment;
 use \implementing\models\site\MySQLApartmentModel;
-use \models\site\Lead;
-use \implementing\models\site\AmoCRMLeadModel;
 use \models\admin\SettingReserve;
 use \implementing\models\admin\MySQLSettingReserveModel;
 
 class ApartmentController
 {
 	private $model;
-	private $lead;
 	private $settings_reserve;
 	private $helper;
 	private $validator;
@@ -35,9 +32,6 @@ class ApartmentController
 
 		$this->model = new Apartment();
 		$this->model->set_model(new MySQLApartmentModel());
-
-		$this->lead = new Lead();
-		$this->lead->set_model(new AmoCRMLeadModel());
 
 		$this->settings_reserve = new SettingReserve();
 		$this->settings_reserve->set_model(new MySQLSettingReserveModel());
@@ -77,7 +71,7 @@ class ApartmentController
 		}
 	}
 
-	public function lead()
+	public function buy()
 	{
 		$this->validator->check_request($_POST);
 
@@ -88,7 +82,7 @@ class ApartmentController
 		$data['phone'] = $_POST['phone'];
 		$data['email'] = $_POST['email'];
 
-		$this->model->lead($data);
+		$this->model->buy($data);
 	}
 
 	public function reserve()
@@ -124,26 +118,7 @@ class ApartmentController
 		$this->validator->check_request($_POST);
 
 		$apartment_id = (int) $_POST['apartment_id'];
-		$buyer_id = (int) $_POST['buyer_id'];
 
-		$this->model->withdraw_reserve($apartment_id, $buyer_id);
-	}
-
-	public function actualize()
-	{
-		$closed_not_implement_leads = json_decode($this->lead->get_closed_not_implement(), true);
-		if (isset($closed_not_implement_leads)) {		
-			$closed_not_implement_apartments = [];
-			foreach ($closed_not_implement_leads['response']['leads'] as $closed_not_implement_lead) {
-				$name_num_closed_not_implement_lead = explode('/', $closed_not_implement_lead['name']);;
-
-				if (count($name_num_closed_not_implement_lead) >= 2) {
-					$num_closed_not_implement_lead = $name_num_closed_not_implement_lead[1];
-					array_push($closed_not_implement_apartments, $num_closed_not_implement_lead);
-				}
-			}
-		}
-		
-		$this->model->actualize($closed_not_implement_apartments);	
+		$this->model->withdraw_reserve($apartment_id);
 	}
 }

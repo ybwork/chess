@@ -1,6 +1,8 @@
 <?php
 
-namespace dbconnections;
+namespace implementing\dbconnections;
+
+use \interfaces\dbconnections\IDBConnection;
 
 class MySQLConnection implements IDBConnection
 {

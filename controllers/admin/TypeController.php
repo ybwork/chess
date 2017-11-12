@@ -3,11 +3,11 @@
 namespace controllers\admin;
 
 use \components\Paginator;
-use \paginators\YBPaginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\admin\Type;
 use \implementing\models\admin\MySQLTypeModel;
 
@@ -26,6 +26,9 @@ class TypeController
 
         $roles = ['admin'];
         $this->validator->check_access($roles);
+
+        $this->paginator = new Paginator();
+		$this->paginator->set_paginator(new YBPaginator());
         
 		$this->model = new Type();
 		$this->model->set_model(new MySQLTypeModel());
@@ -39,7 +42,7 @@ class TypeController
 
 	public function index()
 	{
-		$limit = 20;
+		$limit = 2;
 		$page = $this->helper->get_page();
 		$offset = ($page - 1) * $limit;
 
@@ -49,8 +52,7 @@ class TypeController
 
 		$types = $this->model->get_all_by_offset_limit($offset, $limit);
 
-		$paginator = $this->paginator = new Paginator();
-		$paginator->set_paginator(new YBPaginator($total, $page, $limit, $index));
+		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
 
 		require_once(ROOT . '/views/admin/type/index.php');
 		return true;

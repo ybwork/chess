@@ -2,7 +2,7 @@
 
 namespace components;
 
-use \helpers\IHelper;
+use \interfaces\helpers\IHelper;
 
 class Helper
 {

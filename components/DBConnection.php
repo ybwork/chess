@@ -2,7 +2,7 @@
 
 namespace components;
 
-use \dbconnections\IDBConnection;
+use \interfaces\dbconnections\IDBConnection;
 
 class DBConnection
 {

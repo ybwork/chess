@@ -3,24 +3,18 @@
 namespace implementing\models\site;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
-use \models\site\Lead;
-use \implementing\models\site\AmoCRMLeadModel;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\site\IApartmentModel;
 
 class MySQLApartmentModel implements IApartmentModel
 {
 	private $db_connection;
 	private $validator;
-	private $lead;
 
 	public function __construct()
 	{
-		$this->lead = new Lead();
-		$this->lead->set_model(new AmoCRMLeadModel());
-		
 		$this->validator = new Validator();
 		$this->validator->set_validator(new YBValidator());
 
@@ -44,32 +38,54 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
-	public function lead(array $data)
+	public function buy(array $data)
 	{
         $data = $this->validator->validate($data, [
 			'name' => 'Имя|empty|length_string',
 			'surname' => 'Фамилия|empty|length_string',
         ]);
 
-		$this->lead->lead($data);
+        try {
+        	$db = $this->db_connection->get_connection();
+        	$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        	$db->beginTransaction();
 
-		$db = $this->db_connection->get_connection();
+			$sql = 'UPDATE apartments SET status = 3 WHERE num = :num';
+			$query = $db->prepare($sql);
+			$query->bindValue(':num', $data['apartment_num']);
+			$query->execute();
 
-		$sql = 'UPDATE apartments SET status = 3 WHERE num = :num';
+			$sql = 'INSERT INTO buyers (name, surname, phone, email) VALUES (:name, :surname, :phone, :email)';
+			$query = $db->prepare($sql);
+			$query->bindValue(':name', $data['name'], \PDO::PARAM_STR);
+			$query->bindValue(':surname', $data['surname'], \PDO::PARAM_STR);
+			$query->bindValue(':phone', $data['phone'], \PDO::PARAM_STR);
+			$query->bindValue(':email', $data['email'], \PDO::PARAM_STR);
+			$query->execute();
 
-		$query = $db->prepare($sql);
+			$sql = 'INSERT INTO purchased_apartments (buyer_id, seller_id, apartment_id) VALUES (:buyer_id, :seller_id, :apartment_id)';
+			$query = $db->prepare($sql);
+			$buyer_id = (int) $db->lastInsertId();
+			$seller_id = (int) $_SESSION['user'];
+			$query->bindValue(':buyer_id', $buyer_id, \PDO::PARAM_INT);
+			$query->bindValue(':seller_id', $seller_id, \PDO::PARAM_INT);
+			$query->bindValue(':apartment_id', $data['apartment_id'], \PDO::PARAM_INT);
+			$query->execute();
 
-		$query->bindValue(':num', $data['apartment_num']);
+			$db->commit();
 
-		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
+
 			echo json_encode($response);
 			return true;
-		} else {
+        } catch (\PDOException $e) {
+        	$db->rollBack();
+
 			http_response_code(500);
-			$this->validator->check_response();
-		}
+			$this->validator->check_response('ajax');
+        }
 	}
 
 	public function get_floors_types_aparts()
@@ -125,19 +141,17 @@ class MySQLApartmentModel implements IApartmentModel
 		    $query->execute();
 
 		    $buyer_id = $db->lastInsertId();
-		    $sql = 'INSERT INTO buyers_reservators_apartments (buyer_id, reservator_id, apartment_id, reserve, buy) VALUES (:buyer_id, :reservator_id, :apartment_id, :reserve, :buy)';
+		    $sql = 'INSERT INTO reserved_apartments (buyer_id, seller_id, apartment_id, time_end_reserve) VALUES (:buyer_id, :seller_id, :apartment_id, :time_end_reserve)';
 		    $query = $db->prepare($sql);
 
-			$buy_value = NULL;
 			$time_reserve = $data['time_reserve'];
-			$reserve = date('Y-m-d H:i:s', strtotime("+$time_reserve day"));
-		    $reservator_id = (int) $_SESSION['user'];
+			$time_end_reserve = date('Y-m-d H:i:s', strtotime("+$time_reserve day"));
+		    $seller_id = (int) $_SESSION['user'];
 
 			$query->bindValue(':buyer_id', $buyer_id, \PDO::PARAM_INT);
 			$query->bindValue(':apartment_id', $data['apartment_id'], \PDO::PARAM_INT);
-			$query->bindValue(':reservator_id', $reservator_id, \PDO::PARAM_INT);
-			$query->bindValue(':reserve', $reserve, \PDO::PARAM_STR);
-			$query->bindValue(':buy', $buy_value);
+			$query->bindValue(':seller_id', $seller_id, \PDO::PARAM_INT);
+			$query->bindValue(':time_end_reserve', $time_end_reserve, \PDO::PARAM_STR);
 		    $query->execute();
 
 		   	if ($_SESSION['role_id'] == 4) {
@@ -153,49 +167,9 @@ class MySQLApartmentModel implements IApartmentModel
 		    $db->commit();
 
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
-			echo json_encode($response);
-        } catch (\PDOException $e) {
-        	$db->rollBack();
 
-			http_response_code(500);
-			$this->validator->check_response('ajax');
-        }
-	}
-
-	public function withdraw_reserve(int $apartment_id, int $buyer_id)
-	{
-        try {
-        	$db = $this->db_connection->get_connection();
-        	$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        	$db->beginTransaction();
-
-		    $sql = 'DELETE FROM buyers_reservators_apartments WHERE apartment_id = :apartment_id';
-		    $query = $db->prepare($sql);
-			$query->bindValue(':apartment_id', $apartment_id, \PDO::PARAM_INT);
-		    $query->execute();
-
-		    $sql = 'DELETE FROM buyers WHERE id = :buyer_id';
-		    $query = $db->prepare($sql);
-			$query->bindValue(':buyer_id', $buyer_id, \PDO::PARAM_INT);
-		    $query->execute();
-
-	    	$sql = 'UPDATE apartments SET status = 1 WHERE id = :apartment_id';
-	    	$query = $db->prepare($sql);
-	    	$query->bindValue(':apartment_id', $apartment_id, \PDO::PARAM_INT);
-		   	$query->execute();
-
-	    	$sql = 'INSERT INTO unreservators_apartments (unreservator_id, apartment_id) VALUES (:unreservator_id, :apartment_id)';
-	    	$query = $db->prepare($sql);
-	    	$unreservator_id = (int) $_SESSION['user'];
-	    	$query->bindValue(':apartment_id', $apartment_id, \PDO::PARAM_INT);
-	    	$query->bindValue(':unreservator_id', $unreservator_id, \PDO::PARAM_INT);
-		   	$query->execute();
-
-		    $db->commit();
-
-			header('HTTP/1.0 200 OK', http_response_code(200));
-			$response['message'] = 'Готово';
 			echo json_encode($response);
 			return true;
         } catch (\PDOException $e) {
@@ -206,6 +180,29 @@ class MySQLApartmentModel implements IApartmentModel
         }
 	}
 
+	public function withdraw_reserve(int $apartment_id)
+	{
+    	$db = $this->db_connection->get_connection();
+
+    	$sql = 'UPDATE apartments SET status = 1 WHERE id = :apartment_id';
+
+    	$query = $db->prepare($sql);
+
+    	$query->bindValue(':apartment_id', $apartment_id, \PDO::PARAM_INT);
+
+	   	if ($query->execute()) {
+			header('HTTP/1.0 200 OK', http_response_code(200));
+
+			$response['message'] = 'Готово';
+
+			echo json_encode($response);
+			return true;
+	   	} else {   		
+			http_response_code(500);
+			$this->validator->check_response('ajax');
+	   	}
+	}
+
 	public function auto_withdraw_reserve()
 	{
         try {
@@ -214,7 +211,7 @@ class MySQLApartmentModel implements IApartmentModel
         	$db->beginTransaction();
 
         	$cur_date = date('Y-m-d H:i:s');
-			$sql = 'SELECT buyer_id, apartment_id, reserve FROM buyers_reservators_apartments WHERE reserve < :cur_date';
+			$sql = 'SELECT buyer_id, apartment_id, time_end_reserve FROM reserved_apartments WHERE time_end_reserve < :cur_date';
 			$query = $db->prepare($sql);
 			$query->bindValue(':cur_date', $cur_date);
 			$query->execute();
@@ -229,16 +226,6 @@ class MySQLApartmentModel implements IApartmentModel
 
 			if (count($buyers_apartments) > 0) {
 				foreach ($buyers_apartments as $buyer_apartment) {
-					$sql = 'DELETE FROM buyers_reservators_apartments WHERE apartment_id = :apartment_id';
-					$query = $db->prepare($sql);
-					$query->bindValue(':apartment_id', $buyer_apartment['apartment_id']);
-					$query->execute();
-
-					$sql = 'DELETE FROM buyers WHERE id = :buyer_id';
-					$query = $db->prepare($sql);
-					$query->bindValue(':buyer_id', $buyer_apartment['buyer_id']);
-					$query->execute();
-
 					$sql = 'UPDATE apartments SET status = 1 WHERE id = :apartment_id';
 					$query = $db->prepare($sql);
 					$query->bindValue(':apartment_id', $buyer_apartment['apartment_id']);
@@ -249,38 +236,9 @@ class MySQLApartmentModel implements IApartmentModel
 		    $db->commit();
 
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
-			echo json_encode($response);
-			return true;
-        } catch (\PDOException $e) {
-        	$db->rollBack();
 
-			http_response_code(500);
-			$this->validator->check_response('ajax');
-        }
-	}
-
-	public function actualize(array $closed_not_implement_apartments)
-	{
-        try {
-        	$db = $this->db_connection->get_connection();
-        	$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        	$db->beginTransaction();
-
-			// Не реализованные
-			if (count($closed_not_implement_apartments) > 0) {			
-				$closed_not_implement_apartments_sql = 'UPDATE apartments SET status = 1 WHERE num = :num';
-				$query = $db->prepare($closed_not_implement_apartments_sql);
-				foreach ($closed_not_implement_apartments as $closed_not_implement_apartment_num) {
-					$query->bindValue(':num', $closed_not_implement_apartment_num);
-					$query->execute();
-				}
-			}
-
-		    $db->commit();
-
-			header('HTTP/1.0 200 OK', http_response_code(200));
-			$response['message'] = 'Готово';
 			echo json_encode($response);
 			return true;
         } catch (\PDOException $e) {

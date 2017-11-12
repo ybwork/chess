@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
   $('.button-buy').on('click', function() {
-    $('#reserve-lead').attr('action', '/apartment/lead');
+    $('#reserve-lead').attr('action', '/apartment/buy');
   });
 
   $('.button-reserve').on('click', function() {
@@ -371,7 +371,7 @@ function updateSidebar() {
     }
 
     $("#floorInfo #floorMapSchema .floor-schema").attr("src", "/../../public/image/flats/floor/walls" + whatFloor + ".png");
-
+    console.log(action, data);
     $.ajax({
       url: action,
       data: data,
@@ -780,7 +780,7 @@ function updateSidebar() {
 
   // Phone mask
   $('[name="phone"]').inputmask({
-    "mask": "+7 (999)999-99-99"
+    "mask": "+7(999)999-99-99"
   });
   // Phone mask
 

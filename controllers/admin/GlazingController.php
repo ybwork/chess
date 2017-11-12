@@ -3,11 +3,11 @@
 namespace controllers\admin;
 
 use \components\Paginator;
-use \paginators\YBPaginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\admin\Glazing;
 use \implementing\models\admin\MySQLGlazingModel;
 
@@ -26,6 +26,9 @@ class GlazingController
 
         $roles = ['admin'];
         $this->validator->check_access($roles);
+
+		$this->paginator = new Paginator();
+		$this->paginator->set_paginator(new YBPaginator());
         
 		$this->model = new Glazing();
 		$this->model->set_model(new MySQLGlazingModel());
@@ -36,7 +39,7 @@ class GlazingController
 
 	public function index()
 	{
-		$limit = 20;
+		$limit = 2;
 		$page = $this->helper->get_page();
 		$offset = ($page - 1) * $limit;
 
@@ -46,8 +49,7 @@ class GlazingController
 
 		$glazings = $this->model->get_all_by_offset_limit($offset, $limit);
 
-		$paginator = $this->paginator = new Paginator();
-		$paginator->set_paginator(new YBPaginator($total, $page, $limit, $index));
+		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
 
 		require_once(ROOT . '/views/admin/glazing/index.php');
 		return true;

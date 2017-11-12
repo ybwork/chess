@@ -3,11 +3,11 @@
 namespace controllers\admin;
 
 use \components\Paginator;
-use \paginators\YBPaginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\admin\User;
 use \implementing\models\admin\MySQLUserModel;
 use \models\admin\Group;
@@ -35,6 +35,9 @@ class UserController
         $roles = ['admin'];
         $this->validator->check_access($roles);
 
+        $this->paginator = new Paginator();
+        $this->paginator->set_paginator(new YBPaginator());
+
 		$this->model = new User();
 		$this->model->set_model(new MySQLUserModel());
 
@@ -52,9 +55,8 @@ class UserController
 	{
 		$users = $this->model->get_all();
 		$roles = $this->role->get_all();
-        $available_apartments = $this->apartment->get_available();
         
-        $limit = 20;
+        $limit = 2;
         $page = $this->helper->get_page();
         $offset = ($page - 1) * $limit;
 
@@ -63,9 +65,7 @@ class UserController
         $index = '?page=';
 
         $users = $this->model->get_all_by_offset_limit($offset, $limit);
-
-        $paginator = $this->paginator = new Paginator();
-        $paginator->set_paginator(new YBPaginator($total, $page, $limit, $index));
+        $paginator = $this->paginator->set_params($total, $page, $limit, $index);
 
 		require_once(ROOT . '/views/admin/user/index.php');
 		return true;
@@ -75,12 +75,12 @@ class UserController
 	{
 		$this->validator->check_request($_POST);
 
-		$data['login'] = $_POST['login'];
-		$data['name'] = $_POST['name'];
-		$data['surname'] = $_POST['surname'];
+		$data['role_id'] = (int) $_POST['role'];
+        $data['login'] = $_POST['login'];
+        $data['name'] = $_POST['name'];
+        $data['surname'] = $_POST['surname'];
         $data['patronymic'] = $_POST['patronymic'];
-		$data['role'] = (int) $_POST['role'];
-        $data['apartments'] = $this->helper->get_select2_value('apartments', $_POST);
+        $data['phone'] = $_POST['phone'];
 
         if ($_POST['password']) {
             $data['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -101,8 +101,9 @@ class UserController
         $response['name'] = $user['name'];
         $response['surname'] = $user['surname'];
         $response['patronymic'] = $user['patronymic'];
-        $response['roles'] = $user['roles'];
-        $response['apartments'] = $user['apartments'];
+        $response['phone'] = $user['phone'];
+        $response['role_id'] = $user['role_id'];
+        $response['role_name'] = $user['role_name'];
 
         echo json_encode($response);
         return true;
@@ -113,12 +114,12 @@ class UserController
         $this->validator->check_request($_POST);
 
         $data['id'] = (int) $_POST['id'];
+        $data['role_id'] = (int) $_POST['role'];
         $data['login'] = $_POST['login'];
         $data['name'] = $_POST['name'];
         $data['surname'] = $_POST['surname'];
         $data['patronymic'] = $_POST['patronymic'];
-        $data['role'] = (int) $_POST['role'];
-        $data['apartments'] = $this->helper->get_select2_value('apartments', $_POST);
+        $data['phone'] = $_POST['phone'];
         $data['password'] = $_POST['password'];
 
         $this->model->update($data);

@@ -1,6 +1,6 @@
 <?php
 
-namespace routers;
+namespace interfaces\routers;
 
 interface IRouter
 {

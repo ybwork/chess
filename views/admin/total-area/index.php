@@ -31,8 +31,8 @@
 			</form>
 		<?php endforeach; ?>
 
-		<?php if($total > 20): ?>
-			<?php print $paginator->get(); ?>
+		<?php if($total > 2): ?>
+			<?php print $this->paginator->get(); ?>
 		<?php endif; ?>
 	</div>
 </div>

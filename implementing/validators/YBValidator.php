@@ -1,6 +1,8 @@
 <?php
 
-namespace validators;
+namespace implementing\validators;
+
+use \interfaces\validators\IValidator;
 
 class YBValidator implements IValidator
 {
@@ -16,25 +18,29 @@ class YBValidator implements IValidator
 
 	public function clean($value)
 	{
-		if (is_array($value)) {
-			$result = [];
+		if (is_string($value)) {	
+			if (is_array($value)) {
+				$result = [];
 
-			$i = 0;
-			foreach ($value as $val) {
-				$element = trim($val);
-				$element = strip_tags($element);
-				$element = stripslashes($element);
-				$result[$i] = $element;
+				$i = 0;
+				foreach ($value as $val) {
+					$element = trim($val);
+					$element = strip_tags($element);
+					$element = stripslashes($element);
+					$result[$i] = $element;
 
-				$i++;
+					$i++;
+				}
+			} else {		
+				$result = trim($value);
+				$result = strip_tags($result);
+				$result = stripslashes($result);
 			}
-		} else {		
-			$result = trim($value);
-			$result = strip_tags($result);
-			$result = stripslashes($result);
-		}
 
-		return $result;
+			return $result;
+		} else {
+			return $value;
+		}
 	}
 
 	public function check_empty($value, string $field)
@@ -83,6 +89,20 @@ class YBValidator implements IValidator
 		} else {
 			return true;
 		}	
+	}
+
+	public function check_is_integer($value, string $field)
+	{
+		if (!is_integer($value)) {
+			header('HTTP/1.0 400 Bad Request', http_response_code(400));
+
+			$response['message'] = "Значение поля $field не может быть строкой";
+
+			echo json_encode($response);
+			die();	
+		} else {
+			return true;
+		}
 	}
 
 	public function check_empty_file($value, string $field)

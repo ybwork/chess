@@ -3,11 +3,11 @@
 namespace implementing\models\admin;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \interfaces\models\admin\IUserModel;
 
 class MySQLUserModel implements IUserModel
@@ -58,9 +58,12 @@ class MySQLUserModel implements IUserModel
                 break;
         }
 
-        $sql = "SELECT u.id, u.role_id, u.login, u.name, u.surname, u.patronymic, u.password, r.name as role FROM users u JOIN roles r ON r.id = u.role_id $condition GROUP BY u.id ORDER BY u.id DESC LIMIT $offset, $limit";
+        $sql = "SELECT u.id, u.role_id, u.login, u.name, u.surname, u.patronymic, u.phone, u.password, r.name as role FROM users u JOIN roles r ON r.id = u.role_id $condition GROUP BY u.id ORDER BY u.id DESC LIMIT :offset, :limit";
 
        	$query = $db->prepare($sql);
+
+		$query->bindValue(':offset', $offset, \PDO::PARAM_INT);
+		$query->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
 		if ($query->execute()) {
 			return $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -73,73 +76,58 @@ class MySQLUserModel implements IUserModel
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
+            'role_id' => 'Роль|empty|is_integer',
             'login' => 'Логин|empty|length_string',
             'name' => 'Имя|empty|length_string',
             'surname' => 'Фамилия|empty|length_string',
-            'role' => 'Роль|empty',
+            'patronymic' => 'Отчество|empty|length_string',
+            'phone' => 'Телефон|empty|length_string',
             'password' => 'Пароль|empty|length_string',
         ]);
 
-        try {
-        	$db = $this->db_connection->get_connection();
-        	$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        	$db->beginTransaction();
+        $existing_user = $this->check_exists($data);
+        if ($existing_user) {
+            header('HTTP/1.0 400 Bad Request', http_response_code(400));
 
-		    $sql = 'INSERT INTO users (role_id, login, name, surname, patronymic, password) VALUES (:role, :login, :name, :surname, :patronymic, :password)';
+            $response['message'] = 'Пользователь с таким логином уже существует';
 
-		    $query = $db->prepare($sql);
+            echo json_encode($response);
+            die();
+        }
 
-		    $query->bindValue(':role', $data['role'], \PDO::PARAM_INT);
-		    $query->bindValue(':login', $data['login'], \PDO::PARAM_STR);
-		    $query->bindValue(':name', $data['name'], \PDO::PARAM_STR);
-		    $query->bindValue(':surname', $data['surname'], \PDO::PARAM_STR);
-		    $query->bindValue(':patronymic', $data['patronymic'], \PDO::PARAM_STR);
-		    $query->bindValue(':password', $data['password'], \PDO::PARAM_STR);
+    	$db = $this->db_connection->get_connection();
 
-		    $query->execute();
+	    $sql = 'INSERT INTO users (role_id, login, name, surname, patronymic, phone, password) VALUES (:role_id, :login, :name, :surname, :patronymic, :phone, :password)';
 
-		    $user_id = $db->lastInsertId();
+	    $query = $db->prepare($sql);
 
-		    if ($data['apartments']) {
-			   	// For multiple insert
-		        $fields = '';
-			    foreach ($data['apartments'] as $apartment_id) {
-			    	$fields .= "(:user_id_$apartment_id, :apartment_id_$apartment_id), ";
-			    }
-		    	$part_sql = substr($fields, 0, -2);
+	    $query->bindValue(':role_id', $data['role_id'], \PDO::PARAM_INT);
+	    $query->bindValue(':login', $data['login'], \PDO::PARAM_STR);
+	    $query->bindValue(':name', $data['name'], \PDO::PARAM_STR);
+	    $query->bindValue(':surname', $data['surname'], \PDO::PARAM_STR);
+	    $query->bindValue(':patronymic', $data['patronymic'], \PDO::PARAM_STR);
+	    $query->bindValue(':phone', $data['phone'], \PDO::PARAM_STR);
+	    $query->bindValue(':password', $data['password'], \PDO::PARAM_STR);
 
-		    	$sql = "INSERT INTO users_apartments (user_id, apartment_id) VALUES $part_sql";
-
-		    	$query = $db->prepare($sql);
-
-			    foreach ($data['apartments'] as $apartment_id) {
-			    	$query->bindValue(":user_id_$apartment_id", $user_id, \PDO::PARAM_INT);
-			    	$query->bindValue(":apartment_id_$apartment_id", $apartment_id, \PDO::PARAM_INT);
-			    }
-
-			   	$query->execute();
-		    }
-
-		    $db->commit();
-
+	    if ($query->execute()) {    	
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 			return true;
-        } catch (\PDOException $e) {
-        	$db->rollBack();
-
+	    } else {    	
 			http_response_code(500);
 			$this->validator->check_response('ajax');
-        }
+	    }
 	}
 
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();
 
-		$sql = "SELECT u.id, u.login, u.name, u.surname, u.patronymic, GROUP_CONCAT(DISTINCT r.id, r.name SEPARATOR ', ') AS roles, GROUP_CONCAT(DISTINCT u_a.apartment_id SEPARATOR ', ') AS apartments FROM users u INNER JOIN roles r ON u.role_id = r.id LEFT JOIN users_apartments u_a ON u.id = u_a.user_id WHERE u.id = :id GROUP BY u.id";
+		$sql = "SELECT u.id, u.login, u.name, u.surname, u.patronymic, u.phone, r.id as role_id, r.name as role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = :id GROUP BY u.id";
 
 		$query = $db->prepare($sql);
 
@@ -157,123 +145,84 @@ class MySQLUserModel implements IUserModel
     public function update(array $data)
     {
         $data = $this->validator->validate($data, [
+            'role_id' => 'Роль|empty|is_integer',
             'login' => 'Логин|empty|length_string',
             'name' => 'Имя|empty|length_string',
             'surname' => 'Фамилия|empty|length_string',
             'patronymic' => 'Отчество|empty|length_string',
-            'role' => 'Роль|empty',
+            'phone' => 'Телефон|empty|length_string',
         ]);
 
-        // Для проверки на существующего пользователя
         $existing_user = $this->check_exists($data);
-
         if ($existing_user && $existing_user['id'] != $data['id']) {
             header('HTTP/1.0 400 Bad Request', http_response_code(400));
             $response['message'] = 'Пользователь с таким логином уже существует';
             echo json_encode($response);
             die();
         }
+
+        $db = $this->db_connection->get_connection();
        
-	    try {
-		    $db = $this->db_connection->get_connection();
-		    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		    $db->beginTransaction();
+        // На тот случай если пользователь хочет оставить старый пароль
+        if (!$data['password']) {
+            $condition = 'role_id = :role_id, login = :login, name = :name, surname = :surname, patronymic = :patronymic, phone = :phone'; 
+        } else {
+            $condition = 'role_id = :role_id, login = :login, name = :name, surname = :surname, patronymic = :patronymic, phone = :phone, password = :password';
+        }
 
-	        // На тот случай если пользователь хочет оставить старый пароль
-	        if (!$data['password']) {
-	            $condition = 'role_id = :role_id, login = :login, name = :name, surname = :surname, patronymic = :patronymic'; 
-	        } else {
-	            $condition = 'role_id = :role_id, login = :login, name = :name, surname = :surname, patronymic = :patronymic, password = :password';
-	        }
+        $sql = "UPDATE users SET $condition WHERE id = :id";
 
-	        $sql = "UPDATE users SET $condition WHERE id = :id";
+        $query = $db->prepare($sql);
 
-	        $query = $db->prepare($sql);
+        $user_id = (int) $data['id'];
+        $role_id = (int) $data['role_id'];
+        $query->bindValue(':id', $user_id, \PDO::PARAM_INT);
+        $query->bindValue(':role_id', $role_id, \PDO::PARAM_INT);
+        $query->bindValue(':login', $data['login'], \PDO::PARAM_STR);
+        $query->bindValue(':name', $data['name'], \PDO::PARAM_STR);
+        $query->bindValue(':surname', $data['surname'], \PDO::PARAM_STR);
+        $query->bindValue(':patronymic', $data['patronymic'], \PDO::PARAM_STR);
+        $query->bindValue(':phone', $data['phone'], \PDO::PARAM_STR);
+        if ($data['password']) {
+            $password = password_hash($data['password'], PASSWORD_BCRYPT);
+            $query->bindValue(':password', $password);
+        }
 
-	        $user_id = (int) $data['id'];
-	        $role = (int) $data['role'];
-	        $query->bindValue(':id', $user_id, \PDO::PARAM_INT);
-	        $query->bindValue(':role_id', $role, \PDO::PARAM_INT);
-	        $query->bindValue(':login', $data['login'], \PDO::PARAM_STR);
-	        $query->bindValue(':name', $data['name'], \PDO::PARAM_STR);
-	        $query->bindValue(':surname', $data['surname'], \PDO::PARAM_STR);
-	        $query->bindValue(':patronymic', $data['patronymic'], \PDO::PARAM_STR);
-	        if ($data['password']) {
-	            $password = password_hash($data['password'], PASSWORD_BCRYPT);
-	            $query->bindValue(':password', $password);
-	        }
-
-	        $query->execute();
-
-	        $sql = 'DELETE FROM users_apartments WHERE user_id = :user_id';
-	        $query = $db->prepare($sql);
-	        $query->bindValue(':user_id', $user_id);
-	        $query->execute();
-
-		    if ($data['apartments']) {
-			   	// For multiple insert
-		        $fields = '';
-			    foreach ($data['apartments'] as $apartment_id) {
-			    	$fields .= "(:user_id_$apartment_id, :apartment_id_$apartment_id), ";
-			    }
-		    	$part_sql = substr($fields, 0, -2);
-
-		    	$sql = "INSERT INTO users_apartments (user_id, apartment_id) VALUES $part_sql";
-
-		    	$query = $db->prepare($sql);
-
-			    foreach ($data['apartments'] as $apartment_id) {
-			    	$query->bindValue(":user_id_$apartment_id", $user_id, \PDO::PARAM_INT);
-			    	$query->bindValue(":apartment_id_$apartment_id", $apartment_id, \PDO::PARAM_INT);
-			    }
-
-			   	$query->execute();
-		    }
-
-		    $db->commit();
-
+        if ($query->execute()) {	
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 			return true;
-	    } catch (\PDOException $e) {
-        	$db->rollBack();
-
+        } else {
 			http_response_code(500);
 			$this->validator->check_response('ajax');
-	    }
+        }
     }
 
     public function delete(int $id)
     {
-    	try {
-    		$db = $this->db_connection->get_connection();
-    		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-    		$db->beginTransaction();
+		$db = $this->db_connection->get_connection();
 
-    		$sql = 'DELETE FROM users WHERE id = :id';
-    		$query = $db->prepare($sql);
-    		$query->bindValue(':id', $id, \PDO::PARAM_INT);
-    		$query->execute();
+		$sql = 'DELETE FROM users WHERE id = :id';
 
-    		$sql = 'DELETE FROM users_apartments WHERE user_id = :user_id';
-    		$query = $db->prepare($sql);
-    		$query->bindValue(':user_id', $id, \PDO::PARAM_INT);
-    		$query->execute();
+		$query = $db->prepare($sql);
 
-    		$db->commit();
+		$query->bindValue(':id', $id, \PDO::PARAM_INT);
 
-    		header('HTTP/1.0 200 OK', http_response_code(200));
+		if ($query->execute()) {		
+			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			echo json_encode($response);
-			return true;	
-    	} catch (\PDOException $e) {
-    		$db->rollBack();
 
-    		http_response_code(500);
-    		$this->validator->check_response('ajax');
-    	}
+			return true;	
+		} else {		
+			http_response_code(500);
+			$this->validator->check_response('ajax');
+		}
     }
 
 	public function count()
@@ -300,7 +249,7 @@ class MySQLUserModel implements IUserModel
 
         $db = $this->db_connection->get_connection();
 
-        $sql = "SELECT u.id, u.role_id, u.login, u.name, u.surname, u.password, r.name AS role_name FROM users u INNER JOIN roles r ON u.role_id = r.id WHERE login = :login GROUP BY u.id";
+        $sql = "SELECT u.id, u.role_id, u.login, u.name, u.surname, u.phone, u.password, r.name AS role_name FROM users u INNER JOIN roles r ON u.role_id = r.id WHERE login = :login GROUP BY u.id";
 
         $query = $db->prepare($sql);
 

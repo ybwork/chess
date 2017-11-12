@@ -3,9 +3,9 @@
 namespace implementing\models\admin;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\admin\IRoleModel;
 
 class MySQLRoleModel implements IRoleModel
@@ -56,9 +56,12 @@ class MySQLRoleModel implements IRoleModel
 	{
 		$db = $this->db_connection->get_connection();
 
-		$sql = "SELECT r.id, r.name FROM roles r $condition ORDER BY r.id DESC LIMIT $offset, $limit";
+		$sql = "SELECT r.id, r.name FROM roles r $condition ORDER BY r.id DESC LIMIT :offset, :limit";
 
        	$query = $db->prepare($sql);
+
+		$query->bindValue(':offset', $offset, \PDO::PARAM_INT);
+		$query->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
 		if ($query->execute()) {
 			return $query->fetchAll(\PDO::FETCH_ASSOC);

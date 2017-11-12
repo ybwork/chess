@@ -2,7 +2,7 @@
 
 namespace components;
 
-use \paginators\IPaginator;
+use \interfaces\paginators\IPaginator;
 
 class Paginator
 {
@@ -11,6 +11,11 @@ class Paginator
     public function set_paginator(IPaginator $paginator)
     {
         $this->paginator = $paginator;
+    }
+
+    public function set_params($total, $current_page_number, $limit, $index)
+    {
+        return $this->paginator->set_params($total, $current_page_number, $limit, $index);
     }
 
     public function get()

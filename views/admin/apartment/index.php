@@ -178,7 +178,7 @@
 		</table>
 
 		<?php if($total > 20): ?>
-			<?php print $paginator->get(); ?>
+			<?php print $this->paginator->get(); ?>
 		<?php endif; ?>
 	</div>
 </div>

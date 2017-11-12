@@ -1,6 +1,6 @@
 <?php
 
-namespace helpers;
+namespace interfaces\helpers;
 
 interface IHelper
 {

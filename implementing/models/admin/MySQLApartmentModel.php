@@ -3,9 +3,9 @@
 namespace implementing\models\admin;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\admin\IApartmentModel;
 
 class MySQLApartmentModel implements IApartmentModel
@@ -42,9 +42,12 @@ class MySQLApartmentModel implements IApartmentModel
 	{
 		$db = $this->db_connection->get_connection();
 
-		$sql = "SELECT a.id, a.type_id, a.total_area_id, a.factual_area, a.floor, a.num, a.price, a.discount, a.status, t.type, t_a.total_area, GROUP_CONCAT(DISTINCT w.id, w.name SEPARATOR ', ') AS windows FROM apartments a JOIN apartments_windows a_w ON a.id = a_w.apartment_id JOIN windows w ON a_w.window_id = w.id JOIN types t ON a.type_id = t.id JOIN total_areas t_a ON a.total_area_id = t_a.id GROUP BY a.id ORDER BY id DESC LIMIT $offset, $limit";
+		$sql = "SELECT a.id, a.type_id, a.total_area_id, a.factual_area, a.floor, a.num, a.price, a.discount, a.status, t.type, t_a.total_area, GROUP_CONCAT(DISTINCT w.id, w.name SEPARATOR ', ') AS windows FROM apartments a JOIN apartments_windows a_w ON a.id = a_w.apartment_id JOIN windows w ON a_w.window_id = w.id JOIN types t ON a.type_id = t.id JOIN total_areas t_a ON a.total_area_id = t_a.id GROUP BY a.id ORDER BY id DESC LIMIT :offset, :limit";
 
        	$query = $db->prepare($sql);
+
+       	$query->bindValue(':offset', $offset, \PDO::PARAM_INT);
+		$query->bindValue(':limit', $limit, \PDO::PARAM_INT);
        	
 		if ($query->execute()) {
 			return $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -73,13 +76,13 @@ class MySQLApartmentModel implements IApartmentModel
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
-			'type_id' => 'Тип|empty|length_integer',
-			'total_area_id' => 'Общая площадь|empty|length_integer',
-			'factual_area' => 'Фактическая площадь|empty|length_integer',
-			'floor' => 'Этаж|empty|length_integer',
-			'num' => 'Номер|empty|length_integer',
-			'price' => 'Цена|empty|length_integer',
-			'status' => 'Статус|empty|length_integer',	
+			'type_id' => 'Тип|empty|is_integer|length_integer',
+			'total_area_id' => 'Общая площадь|empty|is_integer|length_integer',
+			'factual_area' => 'Фактическая площадь|empty|is_integer|length_integer',
+			'floor' => 'Этаж|empty|is_integer|length_integer',
+			'num' => 'Номер|empty|is_integer|length_integer',
+			'price' => 'Цена|empty|is_integer|length_integer',
+			'status' => 'Статус|empty|is_integer|length_integer',	
 			'window' => 'Окна|empty',
 			'glazing' => 'Тип остекления|empty',
         ]);
@@ -180,13 +183,13 @@ class MySQLApartmentModel implements IApartmentModel
 	public function update(array $data)
 	{
         $data = $this->validator->validate($data, [
-			'type_id' => 'Тип|empty|length_integer',
-			'total_area_id' => 'Общая площадь|empty|length_integer',
-			'factual_area' => 'Фактическая площадь|empty|length_integer',
-			'floor' => 'Этаж|empty|length_integer',
-			'num' => 'Номер|empty|length_integer',
-			'price' => 'Цена|empty|length_integer',
-			'status' => 'Статус|empty|length_integer',	
+			'type_id' => 'Тип|empty|is_integer|length_integer',
+			'total_area_id' => 'Общая площадь|empty|is_integer|length_integer',
+			'factual_area' => 'Фактическая площадь|empty|is_integer|length_integer',
+			'floor' => 'Этаж|empty|is_integer|length_integer',
+			'num' => 'Номер|empty|is_integer|length_integer',
+			'price' => 'Цена|empty|is_integer|length_integer',
+			'status' => 'Статус|empty|is_integer|length_integer',	
 			'window' => 'Окна|empty',
 			'glazing' => 'Тип остекления|empty',
         ]);

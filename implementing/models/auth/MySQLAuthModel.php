@@ -3,7 +3,7 @@
 namespace implementing\models\auth;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \interfaces\models\auth\IAuthModel;
 
 class MySQLAuthModel implements IAuthModel

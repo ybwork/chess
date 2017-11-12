@@ -2,10 +2,12 @@
 
 namespace controllers\site;
 
+use \components\Paginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\site\Buyer;
 use \implementing\models\site\MySQLBuyerModel;
 
@@ -39,14 +41,11 @@ class BuyerController
 		if ($buyer) {
 			$response['status'] = 'success';
 			$response['id'] = $buyer['id'];
-			$response['reservator_id'] = $buyer['reservator_id'];
+			$response['seller_id'] = $buyer['seller_id'];
 			$response['name'] = $buyer['name'];
 			$response['surname'] = $buyer['surname'];
 			$response['phone'] = $buyer['phone'];
 			$response['email'] = $buyer['email'];
-		} elseif (count($buyer) <= 0) {
-			$response['status'] = 'fail_amo';
-			$response['message'] = 'Квартира забронированна в amoCRM. Снимите бронь в amoCRM, перейдите в шахматку и сделайте актуализацию. После этого вы можете создать новую бронь в шахматке.';
 		} else {
 			$response['status'] = 'fail';
 			$response['message'] = 'Что то пошло не так, порпобуйте позже';

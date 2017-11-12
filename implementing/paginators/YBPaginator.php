@@ -1,6 +1,8 @@
 <?php
 
-namespace paginators;
+namespace implementing\paginators;
+
+use \interfaces\paginators\IPaginator;
 
 class YBPaginator implements IPaginator
 {
@@ -17,7 +19,7 @@ class YBPaginator implements IPaginator
      * @param {integer} $limit - number tasks for each page
      * @param {integer} $index - url name for pagination pages
      */
-    public function __construct($total, $current_page_number, $limit, $index)
+    public function set_params($total, $current_page_number, $limit, $index)
     {
         $this->total = $total;
         $this->limit = $limit;

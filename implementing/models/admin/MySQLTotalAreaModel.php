@@ -3,9 +3,9 @@
 namespace implementing\models\admin;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\admin\ITotalAreaModel;
 
 class MySQLTotalAreaModel implements ITotalAreaModel
@@ -42,9 +42,12 @@ class MySQLTotalAreaModel implements ITotalAreaModel
 	{
 		$db = $this->db_connection->get_connection();
 
-		$sql = "SELECT id, total_area FROM total_areas ORDER BY id DESC LIMIT $offset, $limit";
+		$sql = "SELECT id, total_area FROM total_areas ORDER BY id DESC LIMIT :offset, :limit";
 
        	$query = $db->prepare($sql);
+
+       	$query->bindValue(':offset', $offset, \PDO::PARAM_INT);
+		$query->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
 		if ($query->execute()) {
 			return $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -57,7 +60,7 @@ class MySQLTotalAreaModel implements ITotalAreaModel
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
-            'total_area' => 'Общая площадь|empty|length_integer',
+            'total_area' => 'Общая площадь|empty|is_integer|length_integer',
         ]);
 
 		$db = $this->db_connection->get_connection();
@@ -100,7 +103,7 @@ class MySQLTotalAreaModel implements ITotalAreaModel
 	public function update(array $data)
 	{
         $data = $this->validator->validate($data, [
-            'total_area' => 'Общая площадь|empty|length_integer',
+            'total_area' => 'Общая площадь|empty|is_integer|length_integer',
         ]);
 
 		$db = $this->db_connection->get_connection();

@@ -3,9 +3,9 @@
 namespace implementing\models\admin;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\admin\ISettingReserveModel;
 
 class MySQLSettingReserveModel implements ISettingReserveModel
@@ -41,8 +41,8 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
-            'realtor' => 'Риэлтор|empty|length_integer',
-            'manager' => 'Менеджер|empty|length_integer',
+            'realtor' => 'Риэлтор|empty|is_integer}length_integer',
+            'manager' => 'Менеджер|empty|is_integer}length_integer',
         ]);
 
 		$db = $this->db_connection->get_connection();
@@ -86,8 +86,8 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 	public function update(array $data)
 	{
         $data = $this->validator->validate($data, [
-            'realtor' => 'Риэлтор|empty|length_integer',
-            'manager' => 'Менеджер|empty|length_integer',
+            'realtor' => 'Риэлтор|empty|is_integer}length_integer',
+            'manager' => 'Менеджер|empty|is_integer}length_integer',
         ]);
 
 		$db = $this->db_connection->get_connection();

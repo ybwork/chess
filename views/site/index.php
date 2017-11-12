@@ -1,8 +1,6 @@
 <?php require_once(ROOT . '/views/layouts/header.php'); ?>
-
 			<div class="grid-content">
 				<div id="sidebarCount" class="sidebar">
-
 					<div class="flat__body">
 						<?php foreach($general_info_apartments as $general_info_apartment): ?>
 							<div class="flat-item" data-flat="<?php print $general_info_apartment['type_id'] ?>">
@@ -42,11 +40,7 @@
 					</div>
 
 				</div>
-
-
-
 					<div class="buy-panel">
-
 						<div class="status-block">
 							<div class="circle-loader">
 							  <div class="checkmark draw"></div>
@@ -73,14 +67,6 @@
 								<div class="flat-price">Цена <span></span></div>
 							</div>
 
-							<?php if (isset($_SESSION['errors'])): ?>
-								<?php print $_SESSION['errors']; ?>
-								<?php unset($_SESSION['errors']); ?>
-							<?php elseif(isset($_SESSION['success'])): ?>
-								<?php print $_SESSION['success']; ?>
-								<?php unset($_SESSION['success']); ?>
-							<?php endif; ?>
-
 							<form id="reserve-lead" action="" method="POST">
 								<input id="apartmentId" type="hidden" name="apartment_id">
 								<input id="apartmentNum" type="hidden" name="apartment_num">
@@ -105,13 +91,11 @@
 						</div>
 					</div>
 
-
-
 				<div class="main__content">
 					<div class="floor__detail-number">
 					    <div id="GalleryRun"><img src="/public/image/icon/photo.svg">Галерея</div>
 						<a href="#" class="floor-arrow-down"></a>
-						<div class="floor__number"><span class="number-text"></span>&nbsp; этаж</div>
+						<div class="floor__number"><span class="number-text" id="kia-floor">2</span>&nbsp; этаж</div>
 						<a href="#" class="floor-arrow-up"></a>
 					</div>
 					<main class="home__content">
@@ -125,11 +109,7 @@
 									</div>
 									<div class="map-info-item">
 										<div class="map-info-icon booked"></div>
-										<div class="map-info-title">Обычная<br>бронь</div>
-									</div>
-									<div class="map-info-item">
-										<div class="map-info-icon your-flat"></div>
-										<div class="map-info-title">Оплаченная<br>бронь</div>
+										<div class="map-info-title">Квартира<br>забронирована</div>
 									</div>
 									<div class="map-info-item">
 										<div class="map-info-icon free"></div>
@@ -176,30 +156,19 @@
 
 										<div class="flat-price">
 											<div class="flat-cost">Цена:<br><span id="flatCost">2 160 000 руб.</span>
-											<!--<div class="flat-price-calc">от 15 500 руб./мес.</div>-->
 											</div>
-
 											<button class="btn btn-buy">Купить / бронировать </button>
 										</div>
 									</div>
 								</div>
 							</div>
-
 						</section>
-
 					</main>
 
 
-
-					<!-- Галерея  -->
-
-
 					<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
 						<div class="pswp__bg"></div>
-
 						<div class="pswp__scroll-wrap">
-
 							<div class="pswp__container">
 								<div class="pswp__item"></div>
 								<div class="pswp__item"></div>
@@ -207,19 +176,12 @@
 							</div>
 
 							<div class="pswp__ui pswp__ui--hidden">
-
 								<div class="pswp__top-bar">
-
 									<div class="pswp__counter"></div>
-
 									<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
 									<button class="pswp__button pswp__button--share" title="Share"></button>
-
 									<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
 									<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
 									<div class="pswp__preloader">
 										<div class="pswp__preloader__icn">
 											<div class="pswp__preloader__cut">
@@ -232,26 +194,16 @@
 								<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
 									<div class="pswp__share-tooltip"></div>
 								</div>
-
 								<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
 								</button>
-
 								<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
 								</button>
-
 								<div class="pswp__caption">
 									<div class="pswp__caption__center"></div>
 								</div>
-
 							</div>
-
 						</div>
-
 					</div>
-
-
-
 				</div>
 			</div>
-
 <?php require_once(ROOT . '/views/layouts/footer.php'); ?>

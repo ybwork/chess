@@ -3,11 +3,11 @@
 namespace controllers\admin;
 
 use \components\Paginator;
-use \paginators\YBPaginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\admin\Apartment;
 use \implementing\models\admin\MySQLApartmentModel;
 use \models\admin\Type;
@@ -39,6 +39,9 @@ class ApartmentController
 
         $roles = ['admin'];
         $this->validator->check_access($roles);
+
+        $this->paginator = new Paginator();
+        $this->paginator->set_paginator(new YBPaginator());
 
 		$this->model = new Apartment();
 		$this->model->set_model(new MySQLApartmentModel());
@@ -75,9 +78,7 @@ class ApartmentController
 		$index = '?page=';
 
 		$apartments = $this->model->get_all_by_offset_limit($offset, $limit);
-
-		$paginator = $this->paginator = new Paginator();
-		$paginator->set_paginator(new YBPaginator($total, $page, $limit, $index));
+		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
 
 		require_once(ROOT . '/views/admin/apartment/index.php');
 		return true;

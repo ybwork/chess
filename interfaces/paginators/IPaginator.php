@@ -1,10 +1,10 @@
 <?php
 
-namespace paginators;
+namespace interfaces\paginators;
 
 interface IPaginator
 {
-    public function __construct($total, $current_page_number, $limit, $index);
+    public function set_params($total, $current_page_number, $limit, $index);
     public function get();
     public function generate_html($page, $text);
     public function limits();

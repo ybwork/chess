@@ -2,8 +2,7 @@
 
 namespace components;
 
-use \querybuilders\IQueryBuilder;
-use \validators\IValidator;
+use \interfaces\validators\IValidator;
 
 class Validator
 {
@@ -43,6 +42,11 @@ class Validator
 	{
 		return $this->validator->check_length_integer($value, $field);
 	}
+
+    public function check_is_integer($value, string $field)
+    {
+        return $this->validator->check_is_integer($value, $field);
+    }
 
 	public function check_email(string $value, string $field)
 	{

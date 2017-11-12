@@ -2,10 +2,12 @@
 
 namespace controllers\auth;
 
+use \components\Paginator;
+use \implementing\paginators\YBPaginator;
 use \components\Helper;
-use \helpers\YBHelper;
+use \implementing\helpers\YBHelper;
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\auth\Auth;
 use \implementing\models\auth\MySQLAuthModel;
 use \models\admin\User;
@@ -52,7 +54,7 @@ class LoginController
         $data['password'] = $_POST['password'];
         
 		$user = $this->user->check_exists($data);
-
+		// var_dump($user); die();
 		if ($user) {
        		$auth = $this->model->login($data, $user);
 

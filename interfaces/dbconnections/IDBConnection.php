@@ -1,6 +1,6 @@
 <?php
 
-namespace dbconnections;
+namespace interfaces\dbconnections;
 
 interface IDBConnection
 {

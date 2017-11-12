@@ -1,6 +1,8 @@
 <?php
 
-namespace helpers;
+namespace implementing\helpers;
+
+use \interfaces\helpers\IHelper;
 
 class YBHelper implements IHelper
 {

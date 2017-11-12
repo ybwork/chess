@@ -57,16 +57,17 @@
           <li class="hover-menu__item-title">Тесла дом</li>
           <li><a href="/">Главная</a></li>
           <?php if ($_SESSION['role_id'] == 1): ?>
-            <li><a href="/admin/types">Типы квартир</a></li>
-            <li><a href="/admin/total/areas">Общая площадь</a></li>
-            <li><a href="/admin/windows">Куда выходят окна</a></li>
-            <li><a href="/admin/apartments">Создание квартир</a></li>
-            <li><a href="/admin/glazings">Типы остекления</a></li>
-            <li><a href="/admin/settings-reserve">Настройки брони</a></li>
-            <li><a href="/admin/prices/index">Загрузка цен</a></li>
+            <li><a href="/admin/dealings">Сделки</a></li>
+            <li><a href="/admin/types">Типы</a></li>
+            <li><a href="/admin/total/areas">Площади</a></li>
+            <li><a href="/admin/windows">Окна</a></li>
+            <li><a href="/admin/glazings">Остекления</a></li>
+            <li><a href="/admin/settings-reserve">Бронь</a></li>
+            <li><a href="/admin/prices/index">Цены</a></li>
+            <li><a href="/admin/apartments">Квартиры</a></li>
           <?php endif; ?>
           <?php if ($_SESSION['role_id'] == 3): ?>
-            <li><a href="/admin/prices/index">Загрузка цен</a></li>
+            <li><a href="/admin/prices/index">Цены</a></li>
           <?php endif; ?>
         </ul>
       </li>
@@ -86,20 +87,6 @@
         </li>    
       <?php endif; ?>
     </ul>
-
-    <div class="actual-info">
-      <form id="actual-info" action="/apartments/actualize" method="POST">
-        <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 85.168 85.168" style="enable-background:new 0 0 85.168 85.168;" xml:space="preserve" width="36px" height="36px" class="svg replaced-svg">
-          <svg>
-          <g>
-            <path d="M61.696,14.999l-4.126,4.457c8.806,5.774,13.923,16.353,12.184,27.41c-1.146,7.288-5.063,13.694-11.027,18.037   c-5.206,3.791-11.43,5.615-17.777,5.252l1.09-1.144c-0.021-0.001-0.044,0.002-0.065,0.001l4.129-4.332l-3.813-3.639l-8.188,8.596   l-0.002-0.003l-3.533,3.71l3.811,3.636l0.002-0.001l8.593,8.189l3.536-3.71l-5.565-5.302c7.616,0.36,15.066-1.853,21.315-6.403   c7.261-5.286,12.028-13.084,13.424-21.956C77.741,34.694,71.897,22.14,61.696,14.999z" fill="#FFFFFF"></path>
-            <path d="M15.415,38.302c1.146-7.288,5.063-13.694,11.027-18.037c5.206-3.791,11.43-5.615,17.777-5.252l-1.09,1.144   c0.021,0.001,0.044-0.002,0.065-0.001l-4.129,4.332l3.813,3.639l8.188-8.596l0.002,0.003l3.533-3.71L50.79,8.188l-0.002,0.001   L42.195,0l-3.536,3.71l5.565,5.302c-7.616-0.36-15.066,1.853-21.315,6.403c-7.261,5.286-12.028,13.084-13.424,21.956   C7.425,50.475,13.27,63.029,23.47,70.17l4.126-4.457C18.793,59.937,13.676,49.359,15.415,38.302z" fill="#FFFFFF"></path>
-          </g>
-          </svg>
-        </button>
-      </form>
-    </div>
   </nav>
-
   <section id="boxApartments">
 <?php endif; ?>

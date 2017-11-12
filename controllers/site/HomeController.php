@@ -3,7 +3,7 @@
 namespace controllers\site;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \models\site\Apartment;
 use \implementing\models\site\MySQLApartmentModel;
 

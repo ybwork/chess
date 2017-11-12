@@ -1,6 +1,6 @@
 <?php
 
-namespace validators;
+namespace interfaces\validators;
 
 interface IValidator
 {
@@ -10,6 +10,7 @@ interface IValidator
 	public function check_empty_file($value, string $field);
 	public function check_length_string($value, string $field);
 	public function check_length_integer($value, string $field);
+	public function check_is_integer($value, string $field);
 	public function check_email(string $value, string $field);
 	public function check_request($request);
 	public function check_access(array $roles);

@@ -3,9 +3,9 @@
 namespace implementing\models\site;
 
 use \components\Validator;
-use \validators\YBValidator;
+use \implementing\validators\YBValidator;
 use \components\DBConnection;
-use \dbconnections\MySQLConnection;
+use \implementing\dbconnections\MySQLConnection;
 use \interfaces\models\site\IBuyerModel;
 
 class MySQLBuyerModel implements IBuyerModel
@@ -26,7 +26,7 @@ class MySQLBuyerModel implements IBuyerModel
 	{
 		$db = $this->db_connection->get_connection();
 
-		$sql = 'SELECT b.id, b.name, b.surname, b.phone, b.email, b_a.reservator_id FROM buyers_reservators_apartments b_a LEFT JOIN buyers b ON b_a.buyer_id = b.id WHERE b_a.apartment_id = :id';
+		$sql = 'SELECT b.id, b.name, b.surname, b.phone, b.email, r_a.seller_id FROM reserved_apartments r_a LEFT JOIN buyers b ON r_a.buyer_id = b.id WHERE r_a.apartment_id = :id';
 
 		$query = $db->prepare($sql);
 
