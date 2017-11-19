@@ -20,6 +20,9 @@ class LoginController
 	private $helper;
 	private $validator;
 
+	/**
+	 * Sets validator, helper, base and user models
+	 */
 	public function __construct()
 	{
 		$this->model = new Auth();
@@ -34,18 +37,27 @@ class LoginController
 		$this->validator = new Validator();
 		$this->validator->set_validator(new YBValidator);
 	}
-	
+
+	/**
+	 * Shows form for login
+	 *
+	 * @return html view
+	 */	
 	public function index()
 	{
 		if (isset($_SESSION['user'])) {
 			header('Location: /');
 		}
-		// $pass = password_hash("asdf", PASSWORD_DEFAULT);
-		// var_dump($pass); die();
+
         require_once(ROOT . '/views/auth/login.php');
         return true;
 	}
 
+	/**
+	 * Logins user in system
+	 *
+	 * @return json and http header with status code
+	 */
 	public function login()
 	{
 		$this->validator->check_request($_POST);
@@ -54,7 +66,6 @@ class LoginController
         $data['password'] = $_POST['password'];
         
 		$user = $this->user->check_exists($data);
-		// var_dump($user); die();
 		if ($user) {
        		$auth = $this->model->login($data, $user);
 
@@ -65,19 +76,23 @@ class LoginController
 				$_SESSION['role_name'] = $user['role_name'];
 
 				header('HTTP/1.0 200 OK', http_response_code(200));
+
 				$response['message'] = 'Готово';
+
 				echo json_encode($response);
        		} else {
 	       		header('HTTP/1.0 400 Bad Request', http_response_code(400));
+
 				$response['message'] = 'Неправильные логин или пароль';
+
 				echo json_encode($response);
        		}
 		} else {
        		header('HTTP/1.0 400 Bad Request', http_response_code(400));
+
 			$response['message'] = 'Неправильные логин или пароль';
+			
 			echo json_encode($response);
 		}
-
-    	return true;		
 	}
 }

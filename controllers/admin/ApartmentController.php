@@ -25,12 +25,14 @@ class ApartmentController
 	private $helper;
 	private $validator;
 	private $paginator;
-
 	private $type;
 	private $total_areas;
 	private $window;
 	private $glazing;
 
+	/**
+	 * Sets validator, access, helper, base, type, total area, window, glazing models
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -62,6 +64,11 @@ class ApartmentController
 		$this->helper->set_helper(new YBHelper());
 	}
 
+	/**
+	 * Shows all apartments
+	 *
+	 * @return html view
+	 */
 	public function index()
 	{
 		$types = $this->type->get_all();
@@ -69,21 +76,32 @@ class ApartmentController
 		$windows = $this->window->get_all();
 		$glazings = $this->glazing->get_all();
 
-		$limit = 20;
-		$page = $this->helper->get_page();
-		$offset = ($page - 1) * $limit;
+		/*
+			Заменить обычный вывод, когда появится js
 
-		$apartment_count = $this->model->count();
-		$total = $apartment_count[0]['COUNT(*)'];
-		$index = '?page=';
+			$limit = 20;
+			$page = $this->helper->get_page();
+			$offset = ($page - 1) * $limit;
 
-		$apartments = $this->model->get_all_by_offset_limit($offset, $limit);
-		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
+			$apartment_count = $this->model->count();
+			$total = $apartment_count[0]['COUNT(*)'];
+			$index = '?page=';
+
+			$apartments = $this->model->get_all_by_offset_limit($offset, $limit);
+			$this->paginator->set_params($total, $page, $limit, $index);
+		*/
+
+		$apartments = $this->model->get_all();
 
 		require_once(ROOT . '/views/admin/apartment/index.php');
 		return true;
 	}
 
+	/**
+	 * Collects data for create apartment
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function create()
 	{
 		$this->validator->check_request($_POST);
@@ -102,7 +120,9 @@ class ApartmentController
 		$apartment_exists = $this->model->check_exists($data['num']);
 		if ($apartment_exists) {
 			header('HTTP/1.0 400 Bad request', http_response_code(400));
+
 			$response['message'] = 'Квартира с таким номером уже существует';
+			
 			echo json_encode($response);
 			die(); 
 		} else {
@@ -110,6 +130,11 @@ class ApartmentController
 		}
 	}
 
+	/**
+	 * Collects data for selected apartment
+	 *
+	 * @return data in json
+	 */
 	public function edit()
 	{
 		$id = (int) $this->helper->get_id();
@@ -131,6 +156,11 @@ class ApartmentController
 		return true;
 	}
 
+	/**
+	 * Collects data for update apartment
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function update()
 	{
 		$this->validator->check_request($_POST);
@@ -149,7 +179,12 @@ class ApartmentController
 
 		$this->model->update($data);
 	}
-
+	
+	/**
+	 * Collects data for delete apartment
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function delete()
 	{
 		$this->validator->check_request($_POST);

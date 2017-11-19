@@ -8,12 +8,20 @@ class YBRouter implements IRouter
 {
 	private $routes;
 
+	/**
+	 * Connect file with routes
+	 */
 	public function __construct()
 	{
 		$routes_path = ROOT . '/routes/routes.php';
 		$this->routes = include($routes_path);
 	}
 
+	/**
+	 * Get current url
+	 *
+	 * @return url
+	 */
 	public function get_url()
 	{
 		if (!empty($_SERVER['REQUEST_URI'])) {
@@ -22,6 +30,11 @@ class YBRouter implements IRouter
 		}
 	}
 
+	/**
+	 * Create object
+	 * 
+	 * @param $handlers - controller and method that handle the request
+	 */
 	public function activate_handlers($handlers)
 	{
 		// Для обработки контроллеров с именем типа TotalAreaController
@@ -49,7 +62,10 @@ class YBRouter implements IRouter
 			)
 		);
 	}
-
+	
+	/**
+	 * Runs router
+	 */
 	public function run()
 	{
 		$url = $this->get_url();

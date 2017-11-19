@@ -2,8 +2,10 @@
 
 <div class="home-login">
 	<div class="grid-content">
-		<form class="common-ajax-form" action="/login/user" method="POST">
+		<form class="auth" action="/login/user" method="POST">
 			<img src="/public/image/logo/inpk_logo.svg">
+			
+			<p class="error" style="display: none"></p>
 
 			<div class="login-field-group">
 				<img src="/public/image/icon/login/user.png">

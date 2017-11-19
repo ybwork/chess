@@ -6,6 +6,12 @@ use \interfaces\validators\IValidator;
 
 class YBValidator implements IValidator
 {
+	/**
+	 * Checks server response
+	 *
+	 * @param $type_request - maybe simple or ajax
+	 * @return header or page with status code 500
+	 */
 	public function check_response(string $type_request='simple')
 	{
 		if (http_response_code() == 500 && $type_request == 'ajax') {
@@ -16,6 +22,12 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Cleans string
+	 *
+	 * @param $value - string for cleaning
+	 * @return clean value
+	 */
 	public function clean($value)
 	{
 		if (is_string($value)) {	
@@ -43,6 +55,13 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Check value on empty
+	 *
+	 * @param $value - value for check
+	 * @param $field - name field
+	 * @return clean value
+	 */
 	public function check_empty($value, string $field)
 	{
 		$response = [];
@@ -67,6 +86,13 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Check string on length
+	 *
+	 * @param $value - value for check
+	 * @param $field - name field
+	 * @return status code and response in json or true
+	 */
 	public function check_length_string($value, string $field)
 	{
 		if (strlen($value) > 255) {
@@ -79,6 +105,13 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Check integer on length
+	 *
+	 * @param $value - value for check
+	 * @param $field - name field
+	 * @return status code and response in json or true
+	 */
 	public function check_length_integer($value, string $field)
 	{
 		if (strlen($value) > 11) {
@@ -91,6 +124,13 @@ class YBValidator implements IValidator
 		}	
 	}
 
+	/**
+	 * Check value on type
+	 *
+	 * @param $value - value for check
+	 * @param $field - name field
+	 * @return status code and response in json or true
+	 */
 	public function check_is_integer($value, string $field)
 	{
 		if (!is_integer($value)) {
@@ -105,6 +145,13 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Check file on empty 
+	 *
+	 * @param $value - file for check
+	 * @param $field - name field
+	 * @return status code and response in json or true
+	 */
 	public function check_empty_file($value, string $field)
 	{
 		if (count($value) < 1) {
@@ -116,6 +163,13 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Check email on correct 
+	 *
+	 * @param $value - email for check
+	 * @param $field - name field
+	 * @return status code and response in json or true
+	 */
 	public function check_email(string $value, string $field)
 	{
 		if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -127,6 +181,12 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Check request on exists 
+	 *
+	 * @param $request - GET or POST
+	 * @return redirect on home page
+	 */
 	public function check_request($request)
 	{
 		if (!$request) {
@@ -134,6 +194,12 @@ class YBValidator implements IValidator
 		}
 	}
 
+	/**
+	 * Check user access
+	 *
+	 * @param $roles_groups - roles and groups that have access
+	 * @return redirect on home page or true
+	 */
     public function check_access(array $roles)
     {
     	$roles_values = [
@@ -154,6 +220,11 @@ class YBValidator implements IValidator
 		}
     }
 
+	/**
+	 * Check user on auth 
+	 *
+	 * @return redirect on login page or true
+	 */
     public function check_auth()
     {
     	if (isset($_SESSION['user'])) {
@@ -162,7 +233,13 @@ class YBValidator implements IValidator
     		header('Location: /login');
     	}
     }
-
+    
+	/**
+	 * Validate request data
+	 *
+	 * @param $fields - fields which need to be checked
+	 * @return valid value
+	 */
 	public function validate(array $fields, array $rules): array
 	{
 		$fields_names = [];

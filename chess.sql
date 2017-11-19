@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 12 2017 г., 16:58
+-- Время создания: Ноя 19 2017 г., 11:42
 -- Версия сервера: 5.7.16
 -- Версия PHP: 7.1.0
 
@@ -43,8 +43,8 @@ CREATE TABLE `apartments` (
 --
 
 INSERT INTO `apartments` (`id`, `type_id`, `total_area_id`, `factual_area`, `floor`, `num`, `price`, `discount`, `status`) VALUES
-(1, 4, 2, '52', 2, 1, 2170000, NULL, 3),
-(2, 1, 1, '26', 2, 2, 998000, NULL, 3),
+(1, 4, 2, '52', 2, 1, 2150000, NULL, 1),
+(2, 1, 1, '26', 2, 2, 995000, NULL, 1),
 (3, 2, 3, '55', 2, 3, 2270000, NULL, 1),
 (4, 2, 3, '54', 2, 4, 2270000, NULL, 1),
 (5, 1, 1, '27', 2, 5, 990000, NULL, 1),
@@ -655,6 +655,44 @@ CREATE TABLE `buyers` (
   `email` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Дамп данных таблицы `buyers`
+--
+
+INSERT INTO `buyers` (`id`, `name`, `surname`, `phone`, `email`) VALUES
+(1, 'вава', 'вав', '+7(343)434-34-34', 'test@gmail.com'),
+(2, 'ddd', 'ddd', '+7(343)434-34-34', 'test@gmail.com'),
+(3, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(4, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(5, 'fgfgfg', 'fdfdf', '+7(434)343-43-43', 'test@gmail.com'),
+(6, 'dfdf', 'dfdfd', '+7(343)434-34-34', 'test@gmail.com'),
+(7, 'dfdf', 'dfdfdf', '+7(334)343-43-43', 'test@gmail.com'),
+(8, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(9, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(10, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(11, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(12, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(13, 'sdsd', 'dfdfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(14, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(15, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(16, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(17, 'dfdf', 'dfdf', '+7(343)434-33-43', 'test@gmail.com'),
+(18, 'dfdf', 'dfdf', '+7(434)343-43-43', 'test@gmail.com'),
+(19, 'dfdf', 'dfdfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(20, 'dfdf', 'dfdf3', '+7(343)434-34-34', 'test@gmail.com'),
+(21, 'dfd', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(22, 'dfdf', 'dfdfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(23, 'dfd', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(24, 'dfdf', 'dfdfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(25, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(26, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(27, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(28, 'dfdf', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(29, 'dfdf', 'dfdf', '+7(434)343-43-43', 'test@gmail.com'),
+(30, 'dfd', 'dfdf', '+7(343)434-34-34', 'test@gmail.com'),
+(31, 'dfdf', '3dfd', '+7(334)343-43-43', 'test@gmail.com'),
+(32, 'fdfd', 'dfdf', '+7(343)434-34-34', 'test@gmail.com');
+
 -- --------------------------------------------------------
 
 --
@@ -688,6 +726,42 @@ CREATE TABLE `purchased_apartments` (
   `time_purchase` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Дамп данных таблицы `purchased_apartments`
+--
+
+INSERT INTO `purchased_apartments` (`id`, `buyer_id`, `seller_id`, `apartment_id`, `time_purchase`) VALUES
+(1, 2, 15, 2, '2017-11-16 03:50:44'),
+(2, 3, 15, 1, '2017-11-16 04:02:03'),
+(3, 4, 15, 3, '2017-11-16 04:02:52'),
+(4, 5, 15, 4, '2017-11-16 04:03:26'),
+(5, 6, 15, 5, '2017-11-16 04:05:12'),
+(6, 7, 15, 6, '2017-11-16 04:05:37'),
+(7, 8, 15, 6, '2017-11-16 04:06:20'),
+(8, 9, 15, 7, '2017-11-16 04:07:05'),
+(9, 10, 15, 8, '2017-11-16 04:07:41'),
+(10, 11, 15, 9, '2017-11-16 04:08:01'),
+(11, 12, 15, 10, '2017-11-16 04:08:28'),
+(12, 13, 15, 11, '2017-11-16 04:16:14'),
+(13, 14, 15, 12, '2017-11-16 04:16:31'),
+(14, 15, 15, 13, '2017-11-16 04:17:20'),
+(15, 16, 15, 13, '2017-11-16 04:17:48'),
+(16, 17, 15, 16, '2017-11-16 04:19:22'),
+(17, 18, 15, 15, '2017-11-16 04:19:37'),
+(18, 19, 15, 14, '2017-11-16 04:19:56'),
+(19, 20, 15, 3, '2017-11-16 04:21:02'),
+(20, 21, 15, 1, '2017-11-16 04:21:36'),
+(21, 22, 15, 2, '2017-11-16 04:21:50'),
+(22, 23, 15, 4, '2017-11-16 04:27:00'),
+(23, 24, 15, 4, '2017-11-16 04:27:15'),
+(24, 25, 15, 14, '2017-11-16 04:27:44'),
+(25, 26, 15, 5, '2017-11-16 04:28:20'),
+(26, 27, 15, 6, '2017-11-16 04:28:38'),
+(27, 28, 15, 7, '2017-11-16 04:29:10'),
+(28, 29, 15, 16, '2017-11-16 04:29:34'),
+(29, 31, 15, 11, '2017-11-16 04:30:14'),
+(30, 32, 1, 1, '2017-11-19 07:05:07');
+
 -- --------------------------------------------------------
 
 --
@@ -702,6 +776,14 @@ CREATE TABLE `reserved_apartments` (
   `time_start_reserve` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `time_end_reserve` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `reserved_apartments`
+--
+
+INSERT INTO `reserved_apartments` (`id`, `buyer_id`, `seller_id`, `apartment_id`, `time_start_reserve`, `time_end_reserve`) VALUES
+(1, 1, 15, 1, '2017-11-16 03:49:58', '2017-11-21 02:49:58'),
+(2, 30, 15, 9, '2017-11-16 04:29:48', '2017-11-21 03:29:48');
 
 -- --------------------------------------------------------
 
@@ -720,8 +802,8 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles` (`id`, `name`) VALUES
 (1, 'admin'),
-(3, 'Менеджер'),
-(4, 'Риэлтор');
+(2, 'Менеджер'),
+(3, 'Риэлтор');
 
 -- --------------------------------------------------------
 
@@ -807,8 +889,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `role_id`, `login`, `name`, `surname`, `patronymic`, `phone`, `password`) VALUES
 (1, 1, 'admin', 'Илья', 'Кадук', 'Александрович', '89081920644', '$2y$10$veLMQWBZMy84y7ZsPeXeCuASTkB4RuL8lxjoLWcBgok3JF0b455Cu'),
-(15, 3, 'manager', 'Олег', 'Рейм', 'Валерьевич', '89081920644', '$2y$10$W5HB.LZ3XQgyrfOvFkN3k.EgnWb7UJxqn.VUbz9rq0/2Nx4fUPCBi'),
-(16, 4, 'realtor', 'Иван', 'Малахов', 'Дмитриевич', '89081920644', '$2y$10$PdUZ.OC12XVzYwG1QvgcfemtKfq3WEVZbF8PKo8mpzPdoSfNklO8e');
+(15, 2, 'manager', 'Олег', 'Рейм', 'Валерьевич', '89081920644', '$2y$10$W5HB.LZ3XQgyrfOvFkN3k.EgnWb7UJxqn.VUbz9rq0/2Nx4fUPCBi'),
+(16, 3, 'realtor', 'Иван', 'Малахов', 'Дмитриевич', '89081920644', '$2y$10$PdUZ.OC12XVzYwG1QvgcfemtKfq3WEVZbF8PKo8mpzPdoSfNklO8e');
 
 -- --------------------------------------------------------
 
@@ -936,27 +1018,27 @@ ALTER TABLE `apartments_windows`
 -- AUTO_INCREMENT для таблицы `buyers`
 --
 ALTER TABLE `buyers`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT для таблицы `glazings`
 --
 ALTER TABLE `glazings`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT для таблицы `purchased_apartments`
 --
 ALTER TABLE `purchased_apartments`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT для таблицы `reserved_apartments`
 --
 ALTER TABLE `reserved_apartments`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT для таблицы `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT для таблицы `settings_reserve`
 --
@@ -976,7 +1058,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT для таблицы `windows`
 --

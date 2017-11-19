@@ -13,6 +13,9 @@ class MySQLTypeModel implements ITypeModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,11 @@ class MySQLTypeModel implements ITypeModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all types from db
+	 *
+	 * @return array data or http headers with status code
+	 */
 	public function get_all()
 	{
 		$db = $this->db_connection->get_connection();
@@ -38,6 +46,13 @@ class MySQLTypeModel implements ITypeModel
 		}
 	}
 
+	/**
+	 * Gets all types from db by offset/limit
+	 *
+	 * @param $offset - place for start
+	 * @param $limit - record number limit
+	 * @return array data or http headers with status code
+	 */
 	public function get_all_by_offset_limit(int $offset, int $limit)
 	{
 		$db = $this->db_connection->get_connection();
@@ -57,6 +72,12 @@ class MySQLTypeModel implements ITypeModel
 		}
 	}
 
+	/**
+	 * Saves type in db
+	 * 
+	 * @param $data - data for save
+	 * @return json and/or http headers with status code
+	 */
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -73,8 +94,10 @@ class MySQLTypeModel implements ITypeModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -82,6 +105,12 @@ class MySQLTypeModel implements ITypeModel
 		}
 	}
 
+	/**
+	 * Gets type by id from db
+	 * 
+	 * @param $id - type id
+	 * @return array data or http headers with status code
+	 */
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -100,6 +129,12 @@ class MySQLTypeModel implements ITypeModel
 		}
 	}
 
+	/**
+	 * Updates selected type in db
+	 * 
+	 * @param $data - data for update
+	 * @return json and/or http headers with status code
+	 */
 	public function update(array $data)
 	{
 		$db = $this->db_connection->get_connection();
@@ -118,8 +153,10 @@ class MySQLTypeModel implements ITypeModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -127,6 +164,12 @@ class MySQLTypeModel implements ITypeModel
 		}
 	}
 
+	/**
+	 * Deletes selected type from db
+	 * 
+	 * @param $id - type id
+	 * @return json and/or http headers with status code
+	 */
 	public function delete(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -139,8 +182,10 @@ class MySQLTypeModel implements ITypeModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response = [];
 			$response['message'] = 'Готово';
+			
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -148,6 +193,11 @@ class MySQLTypeModel implements ITypeModel
 		}
 	}
 
+	/**
+	 * Counts types in db
+	 * 
+	 * @return json and/or http headers with status code
+	 */
 	public function count()
 	{
 		$db = $this->db_connection->get_connection();

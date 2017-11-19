@@ -18,6 +18,9 @@ class PriceController
 	private $validator;
 	private $paginator; 
 
+	/**
+	 * Sets validator, access, helper, model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -34,12 +37,22 @@ class PriceController
 		$this->helper->set_helper(new YBHelper());
 	}
 
+	/**
+	 * Shows form for upload file
+	 *
+	 * @return html view
+	 */
 	public function index()
 	{
 		require_once(ROOT . '/views/admin/price/index.php');
 		return true;
 	}
 
+	/**
+	 * Uploads csv file with new price
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function upload()
 	{
 		$this->validator->check_request($_POST);
@@ -48,14 +61,14 @@ class PriceController
 		$files_names = $_FILES['prices']['name'];
 		$files_params = $_FILES['prices'];
 
-		if (in_array('', $files_params['name']) || !array_key_exists(1, $files_params['name'])) {
+		if (in_array('', $files_params['name'])) {
 			header('HTTP/1.0 400 Bad Request', http_response_code(400));
-			$response['message'] = 'Должно быть добавленно 2 файла. Первый в формате csv с новыми ценами для тесла дома, второй в формате excel для отправки экономистам!';
+
+			$response['message'] = 'Добавьте файл!';
+
 			echo json_encode($response);
 			die();
 		} else {
-
-			// Удаление старых файлов с ценами
 			$old_files = scandir(ROOT . '/public/files/', 1);
 			foreach ($old_files as $old_file) {
 				if (!is_dir($old_file)) {
@@ -63,7 +76,6 @@ class PriceController
 				}
 			}
 
-			// Загрузка файлов с ценами
 			$i = 0;
 			foreach ($files_params['name'] as $file_name) {
 				$new_path = ROOT . '/public/files/' . $file_name;
@@ -77,7 +89,6 @@ class PriceController
 				$i++;
 			}
 
-			// Обновление цен
 			$new_files = scandir(ROOT . '/public/files/', 1);
 			foreach ($new_files as $new_file) {
 				if (mime_content_type(ROOT . '/public/files/' . $new_file) == 'text/plain') {
@@ -97,7 +108,9 @@ class PriceController
 
 					if (count($nums_prices) < 1) {
 						header('HTTP/1.0 400 Bad Request', http_response_code(400));
+
 						$response['message'] = 'Файл с ценами не может быть пустым!';
+						
 						echo json_encode($response);
 						die();
 					} else {
@@ -105,10 +118,6 @@ class PriceController
 					}
 				}
 			}
-
-			$emails = ['ilia.kaduk@in-pk.com','dmitriy.sergeev@in-pk.com'];
-			$subject = 'Тесла |дом - Обновились цены на квартиры';
-			$this->helper->send_excel_file($files_names, $emails, $subject);
 		}
 	}
 }

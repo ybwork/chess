@@ -1840,3 +1840,19 @@ loader.loading .circle-loader.failed .checkmark:before {
 .admin__table .table-align-center {
   text-align: center;
 }
+.error {
+  background: #890000;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 15px;
+  color: #fff;
+  text-align: center;
+}
+.success {
+  background: #30b22d;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 15px;
+  color: #fff;
+  text-align: center;
+}

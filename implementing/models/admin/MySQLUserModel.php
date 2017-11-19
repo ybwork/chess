@@ -15,6 +15,9 @@ class MySQLUserModel implements IUserModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -24,11 +27,16 @@ class MySQLUserModel implements IUserModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all users from db
+	 *
+	 * @return array data or http headers with status code
+	 */
 	public function get_all()
 	{
 		$db = $this->db_connection->get_connection();
 
-       	$sql = "SELECT u.id, u.role_id, u.login, u.name, u.surname, u.patronymic, u.password, r.name as role FROM users u JOIN roles r ON r.id = u.role_id GROUP BY u.id";
+        $sql = 'SELECT u.id, u.role_id, u.login, u.name, u.surname, u.patronymic, u.phone, u.password, r.name as role FROM users u JOIN roles r ON r.id = u.role_id WHERE u.role_id = 1 OR u.role_id = 2 OR u.role_id = 3 GROUP BY u.id ORDER BY u.id DESC';
 
        	$query = $db->prepare($sql);
 
@@ -40,25 +48,18 @@ class MySQLUserModel implements IUserModel
 		}
 	}
 
+	/**
+	 * Gets all users from db by offset/limit
+	 *
+	 * @param $offset - place for start
+	 * @param $limit - record number limit
+	 * @return array data or http headers with status code
+	 */
 	public function get_all_by_offset_limit(int $offset, int $limit)
 	{
 		$db = $this->db_connection->get_connection();
 
-		$condition = '';
-
-        switch ($_SESSION['role_id']) {
-            case 1:
-                $condition = "WHERE u.role_id = 1 OR u.role_id = 2 OR u.role_id = 3 OR u.role_id = 4 OR u.role_id = 5";
-                break;
-            case 2:
-                $condition = "WHERE u.role_id = 3 OR u.role_id = 4";
-                break;
-            case 3:
-                $condition = "WHERE u.role_id = 4";
-                break;
-        }
-
-        $sql = "SELECT u.id, u.role_id, u.login, u.name, u.surname, u.patronymic, u.phone, u.password, r.name as role FROM users u JOIN roles r ON r.id = u.role_id $condition GROUP BY u.id ORDER BY u.id DESC LIMIT :offset, :limit";
+        $sql = 'SELECT u.id, u.role_id, u.login, u.name, u.surname, u.patronymic, u.phone, u.password, r.name as role FROM users u JOIN roles r ON r.id = u.role_id WHERE u.role_id = 1 OR u.role_id = 2 OR u.role_id = 3 GROUP BY u.id ORDER BY u.id DESC LIMIT :offset, :limit';
 
        	$query = $db->prepare($sql);
 
@@ -73,6 +74,12 @@ class MySQLUserModel implements IUserModel
 		}
 	}
 
+	/**
+	 * Saves user in db
+	 * 
+	 * @param $data - data for save
+	 * @return json and/or http headers with status code
+	 */
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -116,13 +123,18 @@ class MySQLUserModel implements IUserModel
 			$response['data'] = $data;
 
 			echo json_encode($response);
-			return true;
 	    } else {    	
 			http_response_code(500);
 			$this->validator->check_response('ajax');
 	    }
 	}
 
+	/**
+	 * Gets user by id from db
+	 * 
+	 * @param $id - user id
+	 * @return array data or http headers with status code
+	 */
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -141,7 +153,12 @@ class MySQLUserModel implements IUserModel
 		}	
 	}
 
-
+	/**
+	 * Updates selected user in db
+	 * 
+	 * @param $data - data for update
+	 * @return json and/or http headers with status code
+	 */
     public function update(array $data)
     {
         $data = $this->validator->validate($data, [
@@ -202,6 +219,12 @@ class MySQLUserModel implements IUserModel
         }
     }
 
+	/**
+	 * Deletes selected user from db
+	 * 
+	 * @param $id - user id
+	 * @return json and/or http headers with status code
+	 */
     public function delete(int $id)
     {
 		$db = $this->db_connection->get_connection();
@@ -216,15 +239,19 @@ class MySQLUserModel implements IUserModel
 			header('HTTP/1.0 200 OK', http_response_code(200));
 
 			$response['message'] = 'Готово';
-			echo json_encode($response);
 
-			return true;	
+			echo json_encode($response);	
 		} else {		
 			http_response_code(500);
 			$this->validator->check_response('ajax');
 		}
     }
 
+	/**
+	 * Counts users in db
+	 * 
+	 * @return json and/or http headers with status code
+	 */
 	public function count()
 	{
 		$db = $this->db_connection->get_connection();
@@ -241,6 +268,11 @@ class MySQLUserModel implements IUserModel
 		}
 	}
 
+	/**
+	 * Checks user on exists
+	 * 
+	 * @return json and/or http headers with status code
+	 */
     public function check_exists(array $data)
     {
         $data = $this->validator->validate($data, [

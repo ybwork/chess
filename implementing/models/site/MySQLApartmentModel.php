@@ -13,6 +13,9 @@ class MySQLApartmentModel implements IApartmentModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,12 @@ class MySQLApartmentModel implements IApartmentModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all apartment from db
+	 *
+	 * @param $condition - conditiono for query
+	 * @return array data or http headers with status code
+	 */
 	public function get_all(string $condition='')
 	{
 		$db = $this->db_connection->get_connection();
@@ -38,6 +47,12 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Buy apartment
+	 * 
+	 * @param $data - data about seller and buyer
+	 * @return json and/or http headers with status code
+	 */
 	public function buy(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -50,9 +65,10 @@ class MySQLApartmentModel implements IApartmentModel
         	$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         	$db->beginTransaction();
 
-			$sql = 'UPDATE apartments SET status = 3 WHERE num = :num';
+			$sql = 'UPDATE apartments SET status = :status WHERE num = :num';
 			$query = $db->prepare($sql);
-			$query->bindValue(':num', $data['apartment_num']);
+			$query->bindValue(':num', $data['apartment_num'], \PDO::PARAM_INT);
+			$query->bindValue(':status', 3, \PDO::PARAM_INT);
 			$query->execute();
 
 			$sql = 'INSERT INTO buyers (name, surname, phone, email) VALUES (:name, :surname, :phone, :email)';
@@ -88,6 +104,11 @@ class MySQLApartmentModel implements IApartmentModel
         }
 	}
 
+	/**
+	 * Gets statistics of apartments by floor/type
+	 *
+	 * @return array data or json with http status code
+	 */
 	public function get_floors_types_aparts()
 	{
 		$db = $this->db_connection->get_connection();
@@ -104,6 +125,11 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Gets info about apartments
+	 *
+	 * @return array data or json with http status code
+	 */
 	public function get_general_info_apartments()
 	{
 		$db = $this->db_connection->get_connection();
@@ -120,6 +146,12 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Reserve apartment
+	 *
+	 * @param $data - data about seller and buyers
+	 * @return json and/or http headers with status code
+	 */
 	public function reserve(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -159,9 +191,10 @@ class MySQLApartmentModel implements IApartmentModel
 			} else {
 				$status = 2;
 			}
-	    	$sql = "UPDATE apartments SET status = $status WHERE id = :apartment_id";
+	    	$sql = 'UPDATE apartments SET status = :status WHERE id = :apartment_id';
 	    	$query = $db->prepare($sql);
 	    	$query->bindValue(':apartment_id', $data['apartment_id'], \PDO::PARAM_INT);
+	    	$query->bindValue(':status', $status, \PDO::PARAM_INT);
 		   	$query->execute();
 
 		    $db->commit();
@@ -180,6 +213,12 @@ class MySQLApartmentModel implements IApartmentModel
         }
 	}
 
+	/**
+	 * Withdraw reserve apartment
+	 *
+	 * @param $apartment_id - apartment id
+	 * @return json and/or http headers with status code
+	 */
 	public function withdraw_reserve(int $apartment_id)
 	{
     	$db = $this->db_connection->get_connection();
@@ -203,6 +242,11 @@ class MySQLApartmentModel implements IApartmentModel
 	   	}
 	}
 
+	/**
+	 * Auto withdraw reserve apartment (for cron)
+	 *
+	 * @return json and/or http headers with status code
+	 */
 	public function auto_withdraw_reserve()
 	{
         try {

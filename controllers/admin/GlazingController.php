@@ -16,8 +16,11 @@ class GlazingController
 	private $model;
 	private $helper;
 	private $validator;
-	private $paginator; 
+	private $paginator;
 
+	/**
+	 * Sets validator, access, helper, model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -37,24 +40,41 @@ class GlazingController
 		$this->helper->set_helper(new YBHelper());
 	}
 
+	/**
+	 * Shows all glazings
+	 *
+	 * @return html view
+	 */
 	public function index()
 	{
-		$limit = 2;
-		$page = $this->helper->get_page();
-		$offset = ($page - 1) * $limit;
 
-		$glazing_count = $this->model->count();
-		$total = $glazing_count[0]['COUNT(*)'];
-		$index = '?page=';
+		/*
+			Заменить обычный вывод, когда появится js
 
-		$glazings = $this->model->get_all_by_offset_limit($offset, $limit);
+			$limit = 20;
+			$page = $this->helper->get_page();
+			$offset = ($page - 1) * $limit;
 
-		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
+			$glazing_count = $this->model->count();
+			$total = $glazing_count[0]['COUNT(*)'];
+			$index = '?page=';
+
+			$glazings = $this->model->get_all_by_offset_limit($offset, $limit);
+
+			$this->paginator->set_params($total, $page, $limit, $index);
+		*/
+
+		$glazings = $this->model->get_all();
 
 		require_once(ROOT . '/views/admin/glazing/index.php');
 		return true;
 	}
 
+	/**
+	 * Collects data for create glazing
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function create()
 	{
 		$this->validator->check_request($_POST);
@@ -64,6 +84,11 @@ class GlazingController
 		$this->model->create($data);
 	}
 
+	/**
+	 * Collects data for selected glazing
+	 *
+	 * @return data in json
+	 */
 	public function edit()
 	{
 		$id = (int) $this->helper->get_id();
@@ -76,6 +101,11 @@ class GlazingController
 		return true;
 	}
 
+	/**
+	 * Collects data for update glazing
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function update()
 	{
 		$this->validator->check_request($_POST);
@@ -85,7 +115,12 @@ class GlazingController
 
 		$this->model->update($data);
 	}
-
+	
+	/**
+	 * Collects data for delete glazing
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function delete()
 	{
 		$this->validator->check_request($_POST);

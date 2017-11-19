@@ -13,6 +13,9 @@ class MySQLBuyerModel implements IBuyerModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,12 @@ class MySQLBuyerModel implements IBuyerModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets buyer by id from db
+	 * 
+	 * @param $id - buyer id
+	 * @return array data or http headers with status code
+	 */
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();

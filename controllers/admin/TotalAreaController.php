@@ -18,6 +18,9 @@ class TotalAreaController
 	private $validator;
 	private $paginator; 
 
+	/**
+	 * Sets validator, access, helper, model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -37,24 +40,40 @@ class TotalAreaController
 		$this->helper->set_helper(new YBHelper());
 	}
 
+	/**
+	 * Shows all totals areas
+	 *
+	 * @return html view
+	 */
 	public function index()
 	{
-		$limit = 2;
-		$page = $this->helper->get_page();
-		$offset = ($page - 1) * $limit;
+		/*
+			Заменить обычный вывод, когда появится js
 
-		$total_area_count = $this->model->count();
-		$total = $total_area_count[0]['COUNT(*)'];
-		$index = '?page=';
+			$limit = 20;
+			$page = $this->helper->get_page();
+			$offset = ($page - 1) * $limit;
 
-		$total_areas = $this->model->get_all_by_offset_limit($offset, $limit);
+			$total_area_count = $this->model->count();
+			$total = $total_area_count[0]['COUNT(*)'];
+			$index = '?page=';
 
-		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
+			$total_areas = $this->model->get_all_by_offset_limit($offset, $limit);
+
+			$this->paginator->set_params($total, $page, $limit, $index);
+		*/
+
+		$total_areas = $this->model->get_all();
 
 		require_once(ROOT . '/views/admin/total-area/index.php');
 		return true;
 	}
 
+	/**
+	 * Collects data for create total area
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function create()
 	{
 		$this->validator->check_request($_POST);
@@ -64,6 +83,11 @@ class TotalAreaController
 		$this->model->create($data);
 	}
 
+	/**
+	 * Collects data for selected total area
+	 *
+	 * @return data in json
+	 */
 	public function edit()
 	{
 		$id = (int) $this->helper->get_id();
@@ -76,6 +100,11 @@ class TotalAreaController
 		return true;
 	}
 
+	/**
+	 * Collects data for update total area
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function update()
 	{
 		$this->validator->check_request($_POST);
@@ -86,6 +115,11 @@ class TotalAreaController
 		$this->model->update($data);
 	}
 
+	/**
+	 * Collects data for delete total area
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function delete()
 	{
 		$this->validator->check_request($_POST);

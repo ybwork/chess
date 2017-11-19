@@ -13,6 +13,9 @@ class MySQLGlazingModel implements IGlazingModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,11 @@ class MySQLGlazingModel implements IGlazingModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all glazings from db
+	 *
+	 * @return array data or http headers with status code
+	 */
 	public function get_all()
 	{
 		$db = $this->db_connection->get_connection();
@@ -38,6 +46,13 @@ class MySQLGlazingModel implements IGlazingModel
 		}
 	}
 
+	/**
+	 * Gets all glazings from db by offset/limit
+	 *
+	 * @param $offset - place for start
+	 * @param $limit - record number limit
+	 * @return array data or http headers with status code
+	 */
 	public function get_all_by_offset_limit(int $offset, int $limit)
 	{
 		$db = $this->db_connection->get_connection();
@@ -57,6 +72,12 @@ class MySQLGlazingModel implements IGlazingModel
 		}
 	}
 
+	/**
+	 * Saves glazing in db
+	 * 
+	 * @param $data - data for save
+	 * @return json and/or http headers with status code
+	 */
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -73,15 +94,24 @@ class MySQLGlazingModel implements IGlazingModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
+			return true;
 		} else {
 			http_response_code(500);
 			$this->validator->check_response('ajax');
 		}
 	}
 
+	/**
+	 * Gets glazing by id from db
+	 * 
+	 * @param $id - glazing id
+	 * @return array data or http headers with status code
+	 */
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -100,6 +130,12 @@ class MySQLGlazingModel implements IGlazingModel
 		}
 	}
 
+	/**
+	 * Updates selected glazing in db
+	 * 
+	 * @param $data - data for update
+	 * @return json and/or http headers with status code
+	 */
 	public function update(array $data)
 	{
 		$db = $this->db_connection->get_connection();
@@ -118,15 +154,24 @@ class MySQLGlazingModel implements IGlazingModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
+			return true;
 		} else {
 			http_response_code(500);
 			$this->validator->check_response('ajax');
 		}
 	}
 
+	/**
+	 * Deletes selected glazing from db
+	 * 
+	 * @param $id - glazing id
+	 * @return json and/or http headers with status code
+	 */
 	public function delete(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -139,15 +184,23 @@ class MySQLGlazingModel implements IGlazingModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response = [];
 			$response['message'] = 'Готово';
+
 			echo json_encode($response);
+			return true;
 		} else {
 			http_response_code(500);
 			$this->validator->check_response('ajax');
 		}
 	}
 
+	/**
+	 * Counts glazings in db
+	 * 
+	 * @return json and/or http headers with status code
+	 */
 	public function count()
 	{
 		$db = $this->db_connection->get_connection();

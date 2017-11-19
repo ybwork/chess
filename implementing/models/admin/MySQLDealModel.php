@@ -13,6 +13,9 @@ class MySQLDealModel implements IDealModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,34 @@ class MySQLDealModel implements IDealModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all dealings from db
+	 *
+	 * @return array data or http headers with status code
+	 */
+	public function get_all()
+	{
+		$db = $this->db_connection->get_connection();
+
+		$sql = "SELECT a.num, u.name as seller_name, u.surname as seller_surname, u.patronymic as seller_patronymic, u.phone as seller_phone, b.name as buyer_name, b.surname as buyer_surname, b.phone as buyer_phone, p_a.time_purchase FROM purchased_apartments p_a JOIN users u ON p_a.seller_id = u.id JOIN buyers b ON p_a.buyer_id = b.id JOIN apartments a ON p_a.apartment_id = a.id WHERE a.status = 3 ORDER BY p_a.time_purchase DESC";
+
+       	$query = $db->prepare($sql);
+       	
+		if ($query->execute()) {
+			return $query->fetchAll(\PDO::FETCH_ASSOC);
+		} else {
+			http_response_code(500);
+			$this->validator->check_response();
+		}	
+	}
+
+	/**
+	 * Gets all dealings from db by offset/limit
+	 *
+	 * @param $offset - place for start
+	 * @param $limit - record number limit
+	 * @return array data or http headers with status code
+	 */
 	public function get_all_by_offset_limit(int $offset, int $limit)
 	{
 		$db = $this->db_connection->get_connection();
@@ -41,6 +72,11 @@ class MySQLDealModel implements IDealModel
 		}
 	}
 
+	/**
+	 * Counts dealings in db
+	 * 
+	 * @return json and/or http headers with status code
+	 */
 	public function count()
 	{
 		$db = $this->db_connection->get_connection();

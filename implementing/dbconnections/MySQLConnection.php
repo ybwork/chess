@@ -7,9 +7,9 @@ use \interfaces\dbconnections\IDBConnection;
 class MySQLConnection implements IDBConnection
 {
 	/**
-	 * Return object for work with database
+	 * Gets connection with database
 	 *
-	 * @return {object} $db - object for work with database
+	 * @return $db - object for work with database
 	 */
 	public function get_connection()
 	{

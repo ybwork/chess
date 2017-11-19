@@ -18,6 +18,9 @@ class WindowController
 	private $validator;
 	private $paginator;
 
+	/**
+	 * Sets validator, access, helper, model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -37,23 +40,39 @@ class WindowController
 		$this->helper->set_helper(new YBHelper());
 	}
 
+	/**
+	 * Shows all windows
+	 *
+	 * @return html view
+	 */
 	public function index()
 	{
-		$limit = 2;
-		$page = $this->helper->get_page();
-		$offset = ($page - 1) * $limit;
+		/*
+			Заменить обычный вывод, когда появится js
 
-		$window_count = $this->model->count();
-		$total = $window_count[0]['COUNT(*)'];
-		$index = '?page=';
+			$limit = 20;
+			$page = $this->helper->get_page();
+			$offset = ($page - 1) * $limit;
 
-		$windows = $this->model->get_all_by_offset_limit($offset, $limit);
-		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
+			$window_count = $this->model->count();
+			$total = $window_count[0]['COUNT(*)'];
+			$index = '?page=';
+
+			$windows = $this->model->get_all_by_offset_limit($offset, $limit);
+			$this->paginator->set_params($total, $page, $limit, $index);
+		*/
+
+		$windows = $this->model->get_all();
 
 		require_once(ROOT . '/views/admin/window/index.php');
 		return true;
 	}
 
+	/**
+	 * Collects data for create window
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function create()
 	{
 		$this->validator->check_request($_POST);
@@ -63,6 +82,11 @@ class WindowController
 		$this->model->create($data);
 	}
 
+	/**
+	 * Collects data for selected window
+	 *
+	 * @return data in json
+	 */
 	public function edit()
 	{
 		$id = (int) $this->helper->get_id();
@@ -75,6 +99,11 @@ class WindowController
 		return true;
 	}
 
+	/**
+	 * Collects data for update window
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function update()
 	{
 		$this->validator->check_request($_POST);
@@ -84,7 +113,12 @@ class WindowController
 
 		$this->model->update($data);
 	}
-
+	
+	/**
+	 * Collects data for delete window
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function delete()
 	{
 		$this->validator->check_request($_POST);

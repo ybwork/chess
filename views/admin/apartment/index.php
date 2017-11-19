@@ -177,9 +177,12 @@
 			<?php endforeach; ?>
 		</table>
 
-		<?php if($total > 20): ?>
-			<?php print $this->paginator->get(); ?>
-		<?php endif; ?>
+		<?php 
+			// Раскомментировать, когда появиться js для пагинации
+			// if ($total > 20) {
+			// 	print $this->paginator->get();
+			// }
+		?>
 	</div>
 </div>
 

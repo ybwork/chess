@@ -26,6 +26,9 @@ class UserController
     private $validator;
     private $paginator;
 
+    /**
+     * Sets validator, access, helper, base, group, role, apartment models
+     */
 	public function __construct()
 	{
         $this->validator = new Validator();
@@ -51,26 +54,40 @@ class UserController
         $this->helper->set_helper(new YBHelper());
 	}
 
+    /**
+     * Shows all users
+     *
+     * @return html view
+     */
 	public function index()
 	{
-		$users = $this->model->get_all();
-		$roles = $this->role->get_all();
-        
-        $limit = 2;
-        $page = $this->helper->get_page();
-        $offset = ($page - 1) * $limit;
+        /*
+            Заменить обычный вывод, когда появится js
 
-        $user_count = $this->model->count();
-        $total = $user_count[0]['COUNT(*)'];
-        $index = '?page=';
+            $limit = 20;
+            $page = $this->helper->get_page();
+            $offset = ($page - 1) * $limit;
 
-        $users = $this->model->get_all_by_offset_limit($offset, $limit);
-        $paginator = $this->paginator->set_params($total, $page, $limit, $index);
+            $user_count = $this->model->count();
+            $total = $user_count[0]['COUNT(*)'];
+            $index = '?page=';
+
+            $users = $this->model->get_all_by_offset_limit($offset, $limit);
+            $this->paginator->set_params($total, $page, $limit, $index);
+        */
+
+        $users = $this->model->get_all();
+        $roles = $this->role->get_all();
 
 		require_once(ROOT . '/views/admin/user/index.php');
 		return true;
 	}
 
+    /**
+     * Collects data for create user
+     *
+     * @return status code
+     */
 	public function create()
 	{
 		$this->validator->check_request($_POST);
@@ -91,6 +108,11 @@ class UserController
 		$this->model->create($data);
 	}
 
+    /**
+     * Collects data for selected user
+     *
+     * @return data in json
+     */
     public function edit()
     {
         $id = (int) $this->helper->get_id();
@@ -109,6 +131,11 @@ class UserController
         return true;
     }
 
+    /**
+     * Collects data for update user
+     *
+     * @return status code
+     */
     public function update()
     {
         $this->validator->check_request($_POST);
@@ -125,6 +152,11 @@ class UserController
         $this->model->update($data);
     }
 
+    /**
+     * Collects data for delete user
+     *
+     * @return status code
+     */
     public function delete()
     {
         $this->validator->check_request($_POST);
@@ -132,7 +164,12 @@ class UserController
         $id = (int) $_POST['id'];
         $this->model->delete($id);
     }
-
+    
+    /**
+     * Logout user from system
+     *
+     * @return status code
+     */
     public function logout() {
         unset($_SESSION['user']);
         unset($_SESSION['error_access']);

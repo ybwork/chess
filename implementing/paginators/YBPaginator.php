@@ -14,10 +14,12 @@ class YBPaginator implements IPaginator
     private $amount;
 
     /**
-     * @param {integer} $total - number of all tasks
-     * @param {integer} $current_page_number - number current page
-     * @param {integer} $limit - number tasks for each page
-     * @param {integer} $index - url name for pagination pages
+     * Sets params 
+     *
+     * @param $total - number of all tasks
+     * @param $current_page_number - number current page
+     * @param $limit - number tasks for each page
+     * @param $index - url name for pagination pages
      */
     public function set_params($total, $current_page_number, $limit, $index)
     {
@@ -31,7 +33,7 @@ class YBPaginator implements IPaginator
     /**
      * Return html code for pagination
      *
-     * @return {html} $html - html code for pagination
+     * @return $html - html code for pagination
      */
     public function get()
     {
@@ -63,8 +65,8 @@ class YBPaginator implements IPaginator
     /**
      * Return links for pagination
      *
-     * @param {integer} $page - nubmer page
-     * @return {html} links for pagination
+     * @param $page - nubmer page
+     * @return links for pagination
      */
     public function generate_html($page, $text=null)
     {
@@ -82,7 +84,7 @@ class YBPaginator implements IPaginator
     /**
      * Return place for start
      *
-     * @return {array} with place for start
+     * @return with place for start
      */
     public function limits()
     {
@@ -101,7 +103,7 @@ class YBPaginator implements IPaginator
     /**
      * Set current page
      *
-     * @param {integer} $current_page_number - nubmer current page
+     * @param $current_page_number - nubmer current page
      */
     public function set_current_page($current_page_number)
     {
@@ -117,7 +119,7 @@ class YBPaginator implements IPaginator
     /**
      * Return all number pages
      *
-     * @return {integer} all number pages
+     * @return all number pages
      */
     public function amount()
     {

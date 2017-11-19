@@ -13,6 +13,9 @@ class MySQLPriceModel implements IPriceModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,11 @@ class MySQLPriceModel implements IPriceModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Uploads new prices apartments in db
+	 *
+	 * @return json and/or http headers with status code
+	 */
 	public function upload(array $nums_prices)
 	{
 		/*
@@ -45,6 +53,11 @@ class MySQLPriceModel implements IPriceModel
 
 			$db->commit();
 
+			header('HTTP/1.0 200 OK', http_response_code(200));
+
+			$response['message'] = 'Готово';
+
+			echo json_encode($response);
 			return true;
 		} catch (\PDOException $e) {
 			$db->rollBack();

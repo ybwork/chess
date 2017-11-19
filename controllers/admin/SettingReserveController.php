@@ -14,8 +14,11 @@ class SettingReserveController
 	private $model;
 	private $helper;
 	private $validator;
-	private $paginator; 
+	private $paginator;
 
+	/**
+	 * Sets validator, access, helper, model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -32,6 +35,11 @@ class SettingReserveController
 		$this->helper->set_helper(new YBHelper());
 	}
 
+	/**
+	 * Shows all settings reserve
+	 *
+	 * @return html view
+	 */
 	public function index()
 	{
 		$settings = $this->model->get_all();
@@ -40,6 +48,11 @@ class SettingReserveController
 		return true;
 	}
 
+	/**
+	 * Collects data for create setting
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function create()
 	{
 		$this->validator->check_request($_POST);
@@ -50,6 +63,11 @@ class SettingReserveController
 		$this->model->create($data);
 	}
 
+	/**
+	 * Collects data for selected setting
+	 *
+	 * @return data in json
+	 */
 	public function edit()
 	{
 		$id = (int) $this->helper->get_id();
@@ -63,6 +81,11 @@ class SettingReserveController
 		return true;
 	}
 
+	/**
+	 * Collects data for update setting
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function update()
 	{
 		$this->validator->check_request($_POST);
@@ -73,7 +96,12 @@ class SettingReserveController
 
 		$this->model->update($data);
 	}
-
+	
+	/**
+	 * Collects data for delete setting
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function delete()
 	{
 		$this->validator->check_request($_POST);

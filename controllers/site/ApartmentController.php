@@ -21,6 +21,9 @@ class ApartmentController
 	private $validator;
 	private $paginator;
 
+	/**
+	 * Sets validator, access, helper, model, setting reserve model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -40,6 +43,11 @@ class ApartmentController
 		$this->helper->set_helper(new YBHelper());
 	}
 
+	/**
+	 * Shows all apartment
+	 *
+	 * @return data in json
+	 */
 	public function index()
 	{
 		$condition = $_GET['operator'] . $_GET['field'] . $_GET['symbol'] . $_GET['floor'];
@@ -71,6 +79,11 @@ class ApartmentController
 		}
 	}
 
+	/**
+	 * Collects data for buy apartment
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function buy()
 	{
 		$this->validator->check_request($_POST);
@@ -85,6 +98,11 @@ class ApartmentController
 		$this->model->buy($data);
 	}
 
+	/**
+	 * Collects data for reserve apatment
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function reserve()
 	{
 		$this->validator->check_request($_POST);
@@ -112,7 +130,12 @@ class ApartmentController
 
 		$this->model->reserve($data);
 	}
-
+	
+	/**
+	 * Collects data for withdraw reserve apatment
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function withdraw_reserve()
 	{
 		$this->validator->check_request($_POST);

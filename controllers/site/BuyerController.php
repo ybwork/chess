@@ -17,6 +17,9 @@ class BuyerController
 	private $helper;
 	private $validator;
 
+	/**
+	 * Sets validator, access, helper, model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -32,7 +35,12 @@ class BuyerController
 		$this->helper = new Helper();
 		$this->helper->set_helper(new YBHelper());
 	}
-
+	
+	/**
+	 * Collect data for show buyer
+	 *
+	 * @return data or message about error in json
+	 */
 	public function show()
 	{
 		$apartment_id = (int) $_GET['apartment_id'];

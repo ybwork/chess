@@ -13,6 +13,9 @@ class MySQLWindowModel implements IWindowModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,11 @@ class MySQLWindowModel implements IWindowModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all windows from db
+	 *
+	 * @return array data or http headers with status code
+	 */
 	public function get_all()
 	{
 		$db = $this->db_connection->get_connection();
@@ -38,6 +46,13 @@ class MySQLWindowModel implements IWindowModel
 		}
 	}
 
+	/**
+	 * Gets all windows from db by offset/limit
+	 *
+	 * @param $offset - place for start
+	 * @param $limit - record number limit
+	 * @return array data or http headers with status code
+	 */
 	public function get_all_by_offset_limit(int $offset, int $limit)
 	{
 		$db = $this->db_connection->get_connection();
@@ -57,6 +72,12 @@ class MySQLWindowModel implements IWindowModel
 		}
 	}
 
+	/**
+	 * Saves window in db
+	 * 
+	 * @param $data - data for save
+	 * @return json and/or http headers with status code
+	 */
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -73,8 +94,10 @@ class MySQLWindowModel implements IWindowModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -82,6 +105,12 @@ class MySQLWindowModel implements IWindowModel
 		}
 	}
 
+	/**
+	 * Gets window by id from db
+	 * 
+	 * @param $id - window id
+	 * @return array data or http headers with status code
+	 */
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -100,6 +129,12 @@ class MySQLWindowModel implements IWindowModel
 		}
 	}
 
+	/**
+	 * Updates selected window in db
+	 * 
+	 * @param $data - data for update
+	 * @return json and/or http headers with status code
+	 */
 	public function update(array $data)
 	{
 		$db = $this->db_connection->get_connection();
@@ -118,8 +153,10 @@ class MySQLWindowModel implements IWindowModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -127,6 +164,12 @@ class MySQLWindowModel implements IWindowModel
 		}
 	}
 
+	/**
+	 * Deletes selected window from db
+	 * 
+	 * @param $id - window id
+	 * @return json and/or http headers with status code
+	 */
 	public function delete(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -139,8 +182,10 @@ class MySQLWindowModel implements IWindowModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response = [];
 			$response['message'] = 'Готово';
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -148,6 +193,11 @@ class MySQLWindowModel implements IWindowModel
 		}
 	}
 
+	/**
+	 * Counts glazings in db
+	 * 
+	 * @return json and/or http headers with status code
+	 */
 	public function count()
 	{
 		$db = $this->db_connection->get_connection();

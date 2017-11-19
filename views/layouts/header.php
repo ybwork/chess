@@ -30,7 +30,7 @@
 
   <header class="header">
     <div class="header-logo">
-      <img src="/public/image/logo/inpk_logo.svg">
+      <a href="/"><img src="/public/image/logo/inpk_logo.svg"></a>
     </div>
     <div class="header-user">
       <div class="user-name"><?php isset($_SESSION['user_name_surname']) ? print $_SESSION['user_name_surname']: print ''; ?></div>
@@ -50,38 +50,24 @@
       <div id="reservator" style="display: none"><?php print $_SESSION['user']; ?></div>
   		<div id="role" style="display: none"><?php print $_SESSION['role_id']; ?></div>
 
-      <li class="navigation-section">
-        <img class="svg" src="/public/image/icon/admin/tesla.svg">
-        <label>Тесла Дом</label>
-        <ul class="hover-menu">
-          <li class="hover-menu__item-title">Тесла дом</li>
-          <li><a href="/">Главная</a></li>
-          <?php if ($_SESSION['role_id'] == 1): ?>
-            <li><a href="/admin/dealings">Сделки</a></li>
-            <li><a href="/admin/types">Типы</a></li>
-            <li><a href="/admin/total/areas">Площади</a></li>
-            <li><a href="/admin/windows">Окна</a></li>
-            <li><a href="/admin/glazings">Остекления</a></li>
-            <li><a href="/admin/settings-reserve">Бронь</a></li>
-            <li><a href="/admin/prices/index">Цены</a></li>
-            <li><a href="/admin/apartments">Квартиры</a></li>
-          <?php endif; ?>
-          <?php if ($_SESSION['role_id'] == 3): ?>
-            <li><a href="/admin/prices/index">Цены</a></li>
-          <?php endif; ?>
-        </ul>
-      </li>
-
-      <?php if ($_SESSION['role_id'] < 4): ?>
+      <?php if ($_SESSION['role_id'] < 3): ?>
         <li class="navigation-section">
           <img class="svg" src="/public/image/icon/admin/settings.svg">
           <ul class="hover-menu">
-              <li class="hover-menu__item-title">Система</li>
+              <li class="hover-menu__item-title">Настройки</li>
               <?php if ($_SESSION['role_id'] == 1): ?>
                 <li><a href="/admin/users">Пользователи</a></li>
                 <li><a href="/admin/roles">Роли</a></li>
-              <?php elseif ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3): ?>
-                <li><a href="/admin/users">Пользователи</a></li>
+                <li><a href="/admin/dealings">Сделки</a></li>
+                <li><a href="/admin/types">Типы</a></li>
+                <li><a href="/admin/total/areas">Площади</a></li>
+                <li><a href="/admin/windows">Окна</a></li>
+                <li><a href="/admin/glazings">Остекления</a></li>
+                <li><a href="/admin/settings-reserve">Бронь</a></li>
+                <li><a href="/admin/prices/index">Цены</a></li>
+                <li><a href="/admin/apartments">Квартиры</a></li>
+              <?php elseif ($_SESSION['role_id'] == 2): ?>
+                <li><a href="/admin/prices/index">Цены</a></li>
               <?php endif; ?>
           </ul>
         </li>    

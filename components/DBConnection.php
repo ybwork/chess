@@ -21,7 +21,7 @@ class DBConnection
 	/**
 	 * Gets connection with db
 	 *
-	 * @return object with connection 
+	 * @return result of the function get_connection
 	 */
 	public function get_connection()
 	{

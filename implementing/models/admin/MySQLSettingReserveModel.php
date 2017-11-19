@@ -13,6 +13,9 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,6 +25,11 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all settings reserve from db
+	 *
+	 * @return array data or http headers with status code
+	 */
 	public function get_all()
 	{
 		$db = $this->db_connection->get_connection();
@@ -38,6 +46,12 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 		}
 	}
 
+	/**
+	 * Saves setting reserve in db
+	 * 
+	 * @param $data - data for save
+	 * @return json and/or http headers with status code
+	 */
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -56,8 +70,10 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -65,6 +81,12 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 		}
 	}
 
+	/**
+	 * Gets settings reserve by id from db
+	 * 
+	 * @param $id - setting reserve id
+	 * @return array data or http headers with status code
+	 */
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -83,6 +105,12 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 		}
 	}
 
+	/**
+	 * Updates selected setting reserve in db
+	 * 
+	 * @param $data - data for update
+	 * @return json and/or http headers with status code
+	 */
 	public function update(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -103,8 +131,10 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);
@@ -112,6 +142,12 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 		}
 	}
 
+	/**
+	 * Deletes selected setting reserve from db
+	 * 
+	 * @param $id - setting reserve id
+	 * @return json and/or http headers with status code
+	 */
 	public function delete(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -124,8 +160,10 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response = [];
 			$response['message'] = 'Готово';
+
 			echo json_encode($response);
 		} else {
 			http_response_code(500);

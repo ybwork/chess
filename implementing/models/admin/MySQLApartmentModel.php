@@ -13,6 +13,9 @@ class MySQLApartmentModel implements IApartmentModel
 	private $db_connection;
 	private $validator;
 
+	/**
+	 * Sets validator, connection with db
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -22,11 +25,16 @@ class MySQLApartmentModel implements IApartmentModel
 		$this->db_connection->set_connection(new MySQLConnection);
 	}
 
+	/**
+	 * Gets all apartments from db
+	 *
+	 * @return array data or http headers with status code
+	 */
 	public function get_all()
 	{
 		$db = $this->db_connection->get_connection();
 
-        $sql = "SELECT id, num FROM apartments ORDER BY id DESC";
+        $sql = "SELECT a.id, a.type_id, a.total_area_id, a.factual_area, a.floor, a.num, a.price, a.discount, a.status, t.type, t_a.total_area, GROUP_CONCAT(DISTINCT w.id, w.name SEPARATOR ', ') AS windows FROM apartments a JOIN apartments_windows a_w ON a.id = a_w.apartment_id JOIN windows w ON a_w.window_id = w.id JOIN types t ON a.type_id = t.id JOIN total_areas t_a ON a.total_area_id = t_a.id GROUP BY a.id ORDER BY id DESC";
 
        	$query = $db->prepare($sql);
 
@@ -38,6 +46,13 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Gets all apartments from db by offset/limit
+	 *
+	 * @param $offset - place for start
+	 * @param $limit - record number limit
+	 * @return array data or http headers with status code
+	 */
 	public function get_all_by_offset_limit(int $offset, int $limit)
 	{
 		$db = $this->db_connection->get_connection();
@@ -57,6 +72,11 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Gets all apaartments with status = 1
+	 * 
+	 * @return array data or http headers with status code
+	 */
 	public function get_available()
 	{
 		$db = $this->db_connection->get_connection();
@@ -73,6 +93,12 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Saves apartment in db
+	 * 
+	 * @param $data - data for save
+	 * @return json and/or http headers with status code
+	 */
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -151,8 +177,10 @@ class MySQLApartmentModel implements IApartmentModel
 		    $db->commit();
 
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
         } catch (\PDOException $e) {
         	$db->rollBack();
@@ -162,6 +190,12 @@ class MySQLApartmentModel implements IApartmentModel
         }
 	}
 
+	/**
+	 * Gets apartment by id from db
+	 * 
+	 * @param $id - apartment id
+	 * @return array data or http headers with status code
+	 */
 	public function show(int $id)
 	{
 		$db = $this->db_connection->get_connection();
@@ -180,6 +214,12 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Updates apartment in db
+	 * 
+	 * @param $data - data for update
+	 * @return json and/or http headers with status code
+	 */
 	public function update(array $data)
 	{
         $data = $this->validator->validate($data, [
@@ -269,8 +309,10 @@ class MySQLApartmentModel implements IApartmentModel
 		    $db->commit();
 
 			header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
 			$response['data'] = $data;
+
 			echo json_encode($response);
 	    } catch (\PDOException $e) {
         	$db->rollBack();
@@ -280,6 +322,12 @@ class MySQLApartmentModel implements IApartmentModel
 	    }
 	}
 
+	/**
+	 * Deletes selected apartment from db
+	 * 
+	 * @param $id - apartment id
+	 * @return json and/or http headers with status code
+	 */
 	public function delete(int $id)
 	{
     	try {
@@ -305,7 +353,9 @@ class MySQLApartmentModel implements IApartmentModel
     		$db->commit();
 
     		header('HTTP/1.0 200 OK', http_response_code(200));
+
 			$response['message'] = 'Готово';
+			
 			echo json_encode($response);	
     	} catch (\PDOException $e) {
     		$db->rollBack();
@@ -315,6 +365,11 @@ class MySQLApartmentModel implements IApartmentModel
     	}
 	}
 
+	/**
+	 * Counts apartments in db
+	 * 
+	 * @return json and/or http headers with status code
+	 */
 	public function count()
 	{
 		$db = $this->db_connection->get_connection();
@@ -331,6 +386,11 @@ class MySQLApartmentModel implements IApartmentModel
 		}
 	}
 
+	/**
+	 * Checks apartment on exists
+	 * 
+	 * @return json and/or http headers with status code
+	 */
 	public function check_exists(int $apartment_num)
 	{
 		$db = $this->db_connection->get_connection();

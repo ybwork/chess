@@ -18,6 +18,9 @@ class TypeController
 	private $validator;
 	private $paginator; 
 
+	/**
+	 * Sets validator, access, helper, model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -40,24 +43,40 @@ class TypeController
 		$this->validator->set_validator(new YBValidator);
 	}
 
+	/**
+	 * Shows all types
+	 *
+	 * @return html view
+	 */
 	public function index()
 	{
-		$limit = 2;
-		$page = $this->helper->get_page();
-		$offset = ($page - 1) * $limit;
+		/*
+			Заменить обычный вывод, когда появится js
 
-		$type_count = $this->model->count();
-		$total = $type_count[0]['COUNT(*)'];
-		$index = '?page=';
+			$limit = 20;
+			$page = $this->helper->get_page();
+			$offset = ($page - 1) * $limit;
 
-		$types = $this->model->get_all_by_offset_limit($offset, $limit);
+			$type_count = $this->model->count();
+			$total = $type_count[0]['COUNT(*)'];
+			$index = '?page=';
 
-		$paginator = $this->paginator->set_params($total, $page, $limit, $index);
+			$types = $this->model->get_all_by_offset_limit($offset, $limit);
+
+			$this->paginator->set_params($total, $page, $limit, $index);
+		*/
+
+		$types = $this->model->get_all();
 
 		require_once(ROOT . '/views/admin/type/index.php');
 		return true;
 	}
 
+	/**
+	 * Collects data for create type
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function create()
 	{
 		$this->validator->check_request($_POST);
@@ -67,6 +86,11 @@ class TypeController
 		$this->model->create($data);
 	}
 
+	/**
+	 * Collects data for selected type
+	 *
+	 * @return data in json
+	 */
 	public function edit()
 	{
 		$id = (int) $this->helper->get_id();
@@ -79,6 +103,11 @@ class TypeController
 		return true;
 	}
 
+	/**
+	 * Collects data for update type
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function update()
 	{
 		$this->validator->check_request($_POST);
@@ -88,7 +117,12 @@ class TypeController
 
 		$this->model->update($data);
 	}
-
+	
+	/**
+	 * Collects data for delete type
+	 *
+	 * @return json and/or http header with status code
+	 */
 	public function delete()
 	{
 		$this->validator->check_request($_POST);

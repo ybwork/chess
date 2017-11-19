@@ -11,6 +11,9 @@ class HomeController
 {
 	private $model;
 
+	/**
+	 * Sets validator, access and model
+	 */
 	public function __construct()
 	{
 		$this->validator = new Validator();
@@ -21,6 +24,11 @@ class HomeController
 		$this->model->set_model(new MySQLApartmentModel());
 	}
 
+	/**
+	 * Show all info about apartments
+	 *
+	 * @return html view
+	*/
 	public function index()
 	{		
 		$apartments = $this->model->get_all();
