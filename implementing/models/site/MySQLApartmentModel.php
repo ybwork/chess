@@ -79,13 +79,21 @@ class MySQLApartmentModel implements IApartmentModel
 			$query->bindValue(':email', $data['email'], \PDO::PARAM_STR);
 			$query->execute();
 
+			$sql = 'SELECT id FROM apartments WHERE num = :num';
+			$query = $db->prepare($sql);
+			$num = (int) $data['apartment_num'];
+			$query->bindValue(':num', $num, \PDO::PARAM_INT);
+			$query->execute();
+			$apartment = $query->fetch(\PDO::FETCH_ASSOC);
+			$apartment_id = (int) $apartment['id'];
+
 			$sql = 'INSERT INTO purchased_apartments (buyer_id, seller_id, apartment_id) VALUES (:buyer_id, :seller_id, :apartment_id)';
 			$query = $db->prepare($sql);
 			$buyer_id = (int) $db->lastInsertId();
 			$seller_id = (int) $_SESSION['user'];
 			$query->bindValue(':buyer_id', $buyer_id, \PDO::PARAM_INT);
 			$query->bindValue(':seller_id', $seller_id, \PDO::PARAM_INT);
-			$query->bindValue(':apartment_id', $data['apartment_id'], \PDO::PARAM_INT);
+			$query->bindValue(':apartment_id', $apartment_id, \PDO::PARAM_INT);
 			$query->execute();
 
 			$db->commit();
@@ -171,8 +179,16 @@ class MySQLApartmentModel implements IApartmentModel
 			$query->bindValue(':phone', $data['phone'], \PDO::PARAM_STR);
 			$query->bindValue(':email', $data['email'], \PDO::PARAM_STR);
 		    $query->execute();
-
 		    $buyer_id = $db->lastInsertId();
+
+		    $sql = 'SELECT id FROM apartments WHERE num = :num';
+			$query = $db->prepare($sql);
+			$num = (int) $data['apartment_num'];
+			$query->bindValue(':num', $num, \PDO::PARAM_INT);
+			$query->execute();
+			$apartment = $query->fetch(\PDO::FETCH_ASSOC);
+			$apartment_id = (int) $apartment['id'];
+
 		    $sql = 'INSERT INTO reserved_apartments (buyer_id, seller_id, apartment_id, time_end_reserve) VALUES (:buyer_id, :seller_id, :apartment_id, :time_end_reserve)';
 		    $query = $db->prepare($sql);
 
@@ -181,20 +197,15 @@ class MySQLApartmentModel implements IApartmentModel
 		    $seller_id = (int) $_SESSION['user'];
 
 			$query->bindValue(':buyer_id', $buyer_id, \PDO::PARAM_INT);
-			$query->bindValue(':apartment_id', $data['apartment_id'], \PDO::PARAM_INT);
+			$query->bindValue(':apartment_id', $apartment_id, \PDO::PARAM_INT);
 			$query->bindValue(':seller_id', $seller_id, \PDO::PARAM_INT);
 			$query->bindValue(':time_end_reserve', $time_end_reserve, \PDO::PARAM_STR);
 		    $query->execute();
 
-		   	if ($_SESSION['role_id'] == 4) {
-				$status = 5;
-			} else {
-				$status = 2;
-			}
 	    	$sql = 'UPDATE apartments SET status = :status WHERE id = :apartment_id';
 	    	$query = $db->prepare($sql);
-	    	$query->bindValue(':apartment_id', $data['apartment_id'], \PDO::PARAM_INT);
-	    	$query->bindValue(':status', $status, \PDO::PARAM_INT);
+	    	$query->bindValue(':apartment_id', $apartment_id, \PDO::PARAM_INT);
+	    	$query->bindValue(':status', 2, \PDO::PARAM_INT);
 		   	$query->execute();
 
 		    $db->commit();
