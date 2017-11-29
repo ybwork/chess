@@ -178,35 +178,6 @@ $(document).ready(function() {
     });
   });
 
-  $(document).on('submit', '.common-ajax-form', function(e) {
-    e.preventDefault();
-
-    var form = $(this);
-
-    var action = form.attr('action');
-    var method = form.attr('method');
-    var data = new FormData(form[0]);
-    
-    $.ajax({
-      url: action,
-      type: method,
-      data: data,
-      cache: false,
-      processData: false,
-      contentType: false,
-
-      success: function(data) {
-        var response = $.parseJSON(data);
-        console.log(response);
-      },
-
-      error: function(e) {
-        var error = $.parseJSON(e.responseText);
-        console.log(error);
-      }
-    });
-  });
-
 /********************************************************Start code by Vit********************************************************/
 
 // Обновление сайдбара без перезагрузки
@@ -619,14 +590,15 @@ function updateSidebar() {
   }
   // Смена этажа
 
-  $('loader').on('click', function() {
-    $('loader').removeClass('active loading');
+  $('.loader').on('click', function() {
+    $('.loader').removeClass('active loading');
     $('.circle-loader').toggleClass('load-complete failed');
     $('.checkmark').toggle();
     var errorMsg = document.querySelector('.error-message');
-    errorMsg.parentNode.removeChild(errorMsg);
+    // errorMsg.parentNode.removeChild(errorMsg);
     
       $('#boxApartments').removeClass('filter-blur');
+      $('.main__content').removeClass('filter-blur');
     
     
   });
@@ -841,8 +813,13 @@ function updateSidebar() {
   // Input focus
 
   // Вызов сайдбара при ширине 1200
-  if(window.matchMedia('(max-width: 1200px)').matches){
-      $('.menu-item').on('click', function() {
+  $(window).on('resize', function() {
+    handleMedia();
+  });
+
+  function handleMedia() {
+    if(window.matchMedia('(max-width: 1200px)').matches){
+      $(document).on('click', '.menu-item', function() {
 
         if ($('.menu-item').hasClass('active-sidebar')) {
           $('.menu-item').removeClass('active-sidebar');
@@ -859,13 +836,176 @@ function updateSidebar() {
       });
 
       $('loader').on('click', function() {
+        $('.navigation-section').removeClass('active');
+        $('.loader').removeClass('active');
+
         $('loader').removeClass('active');
         $('.menu-item').removeClass('active-sidebar');
         $('body').removeClass('get-sidebar');
+        $('#boxApartments').removeClass('filter-blur');
         $('.main__content').removeClass('filter-blur');
       });
+    }
   }
+
+  handleMedia();
   // Вызов сайдбара при ширине 1200
+
+
+
+
+
+
+
+
+  // $(document).on('click', '.btn-action', function() {
+  //   $(this).toggleClass('hidden');
+  //   $(this).siblings('button').toggleClass('hidden');
+  // });
+
+  $(document).on('click', '.form-edit', function() {
+    $(this).toggleClass('hidden');
+    $(this).siblings('button').toggleClass('hidden');
+    $(this).closest('tr').find('td.editable').addClass('active');
+  });
+
+  $(document).on('click', '.form-save', function() {
+    var editable = $(this).closest('tr').find('td.editable');
+    var action = $(this).closest('tr').data('action');
+    var id = $(this).closest('tr').data('id');
+    var data = {};
+    data['id'] = id;
+
+    var allowToSend = true;
+
+    editable.each(function() {
+      if(isValid($(this).find('form'))) {
+        var attrName = $(this).find('input, select').attr('name');
+        if($(this).find('input').length) {
+          if(attrName.indexOf('[]') !== -1) {
+            var span = $(this).find('span');
+            span.html('');
+            $(this).find('input:checked').each(function() {
+              span.append('<div>' + $(this).data('name') + '</div>')
+            });
+          } else {
+            $(this).find('span').text($(this).find('input').val());
+          }
+        } else {
+          $(this).find('span').text($(this).find('option:selected').text());
+        }
+        if(attrName.indexOf('[]') !== -1) {
+          data[attrName] = [];
+          $(this).find('input:checked').each(function() {
+            data[attrName].push($(this).val());
+          });
+        } else {
+          data[attrName] = $(this).find('input, select').val();
+        }
+      } else {
+        allowToSend = false;
+      }
+    });
+
+    if(allowToSend) {
+      editable.removeClass('active');
+      $(this).toggleClass('hidden');
+      $(this).siblings('button').toggleClass('hidden');
+      submitData(action, data);
+    }
+  });
+
+  function submitData(action, data) {
+    $.ajax({
+      url: action,
+      type: 'POST',
+      data: data,
+      success: function(data) {
+        console.log(data);
+      }
+    })
+  }
+
+  $(document).on('submit', '.common-ajax-form', function(e) {
+    e.preventDefault();
+
+    var form = $(this);
+
+    var action = form.attr('action');
+    var method = form.attr('method');
+    var data = new FormData(form[0]);
+
+    if(isValid(form)) {
+      $.ajax({
+        url: action,
+        type: method,
+        data: data,
+        cache: false,
+        processData: false,
+        contentType: false,
+
+        success: function(data) {
+          var response = $.parseJSON(data);
+          if($('#file-error').length) {
+            $('#file-error').text(response.message).addClass('green');
+          }
+          if(form.hasClass('form-delete')) {
+            form.closest('tr').remove();
+          }
+          if(form.hasClass('form-add')) {
+            updateTable();
+          }
+          // console.log(response);
+        },
+
+        error: function(e) {
+          var error = $.parseJSON(e.responseText);
+          if(e.status === 400) {
+            $('#file-error').text(error.message);
+          }
+          console.log(error);
+        }
+      });
+    }
+  });
+
+  function isValid(form) {
+    var clean = true;
+    form.find('input[type="text"], input[type="number"]').each(function() {
+      if($(this).val() == '') {
+        $(this).addClass('err');
+        $('<span class="err-msg">Поле не может быть пустым</span>').insertBefore($(this));
+        clean = false;
+      }
+      if($(this).val().length > 255) {
+        $(this).addClass('err');
+        $('<span class="err-msg">Поле должно быть меньше 255 символов</span>').insertBefore($(this));
+        clean = false;
+      }
+      if($(this).attr('type') == 'number' && $(this).val().length > 11) {
+        $(this).addClass('err');
+        $('<span class="err-msg">Поле должно быть меньше 11 символов</span>').insertBefore($(this));
+        clean = false;
+      }
+    });
+    return clean;
+  }
+
+  $(document).on('focus', 'input', function() {
+    $(this).removeClass('err');
+    $(this).prevAll('.err-msg').remove();
+  });
+
+  function updateTable() {
+    $.ajax({
+      url: window.location.href,
+      type: 'GET',
+      success: function(data) {
+        $(document).find('.table').html($(data).find('.table table'));
+      }
+    });
+  }
+
 
   /********************************************************End code by Vit********************************************************/
 });

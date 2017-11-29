@@ -34,7 +34,11 @@ class MySQLApartmentModel implements IApartmentModel
 	{
 		$db = $this->db_connection->get_connection();
 
-        $sql = "SELECT a.id, a.type_id, a.total_area_id, a.factual_area, a.floor, a.num, a.price, a.discount, a.status, t.type, t_a.total_area, GROUP_CONCAT(DISTINCT w.id, w.name SEPARATOR ', ') AS windows FROM apartments a JOIN apartments_windows a_w ON a.id = a_w.apartment_id JOIN windows w ON a_w.window_id = w.id JOIN types t ON a.type_id = t.id JOIN total_areas t_a ON a.total_area_id = t_a.id GROUP BY a.id ORDER BY id DESC";
+        // $sql = "SELECT a.id, a.type_id, a.total_area_id, a.factual_area, a.floor, a.num, a.price, a.discount, a.status, t.type, t_a.total_area, GROUP_CONCAT(DISTINCT w.id, w.name SEPARATOR ', ') AS windows FROM apartments a JOIN apartments_windows a_w ON a.id = a_w.apartment_id JOIN windows w ON a_w.window_id = w.id JOIN types t ON a.type_id = t.id JOIN total_areas t_a ON a.total_area_id = t_a.id GROUP BY a.id ORDER BY id DESC";
+
+        // $sql = "SELECT a.id, a.type_id, a.total_area_id, a.factual_area, a.floor, a.num, a.price, a.discount, a.status, t.type, t_a.total_area, GROUP_CONCAT(DISTINCT w.id, '-', w.name SEPARATOR ', ') AS windows, GROUP_CONCAT(DISTINCT g.id, '-', g.name SEPARATOR ', ') AS glazings FROM apartments a JOIN apartments_windows a_w ON a.id = a_w.apartment_id JOIN windows w ON a_w.window_id = w.id JOIN types t JOIN total_areas t_a JOIN apartments_glazings a_g ON a.id = a_g.apartment_id JOIN glazings g ON a_g.glazing_id = g.id WHERE a.type_id = t.id AND a.total_area_id = t_a.id GROUP BY a.id ORDER BY id DESC";
+
+        $sql = "SELECT a.id, a.type_id, a.total_area_id, a.factual_area, a.floor, a.num, a.price, a.discount, a.status, t.type, t_a.total_area, GROUP_CONCAT(DISTINCT w.id, '-', w.name SEPARATOR ', ') AS windows, GROUP_CONCAT(DISTINCT g.id, '-', g.name SEPARATOR ', ') AS glazings FROM apartments a LEFT JOIN apartments_windows a_w ON a.id = a_w.apartment_id LEFT JOIN windows w ON a_w.window_id = w.id LEFT JOIN types t ON a.type_id = t.id LEFT JOIN total_areas t_a ON a.total_area_id = t_a.id LEFT JOIN apartments_glazings a_g ON a.id = a_g.apartment_id LEFT JOIN glazings g ON a_g.glazing_id = g.id GROUP BY a.id ORDER BY a.num DESC";
 
        	$query = $db->prepare($sql);
 

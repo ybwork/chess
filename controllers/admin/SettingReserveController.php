@@ -57,8 +57,8 @@ class SettingReserveController
 	{
 		$this->validator->check_request($_POST);
 
-		$data['realtor'] = $_POST['realtor'];
-		$data['manager'] = $_POST['manager'];
+		$data['realtor'] = (int) $_POST['realtor'];
+		$data['manager'] = (int) $_POST['manager'];
 		
 		$this->model->create($data);
 	}
@@ -91,8 +91,8 @@ class SettingReserveController
 		$this->validator->check_request($_POST);
 
 		$data['id'] = (int) $_POST['id'];
-		$data['realtor'] = $_POST['realtor'];
-		$data['manager'] = $_POST['manager'];
+		$data['realtor'] = (int) $_POST['realtor'];
+		$data['manager'] = (int) $_POST['manager'];
 
 		$this->model->update($data);
 	}

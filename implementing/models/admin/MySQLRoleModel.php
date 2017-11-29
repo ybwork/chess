@@ -34,21 +34,22 @@ class MySQLRoleModel implements IRoleModel
 	{
 		$db = $this->db_connection->get_connection();
 
-		$condition = '';
+		// $condition = '';
 
-        switch ($_SESSION['role_id']) {
-            case 1:
-                $condition = "WHERE r.id = 1 OR r.id  = 2 OR r.id  = 3 OR r.id  = 4 OR r.id  = 5";
-                break;
-            case 2:
-                $condition = "WHERE r.id  = 3 OR r.id = 4";
-                break;
-            case 3:
-                $condition = "WHERE r.id  = 4";
-                break;
-        }
+        // switch ($_SESSION['role_id']) {
+        //     case 1:
+        //         $condition = "WHERE r.id = 1 OR r.id  = 2 OR r.id  = 3 OR r.id  = 4 OR r.id  = 5";
+        //         break;
+        //     case 2:
+        //         $condition = "WHERE r.id  = 3 OR r.id = 4";
+        //         break;
+        //     case 3:
+        //         $condition = "WHERE r.id  = 4";
+        //         break;
+        // }
 
-        $sql = "SELECT r.id, r.name FROM roles r $condition ORDER BY r.id DESC";
+        // $sql = "SELECT r.id, r.name FROM roles r $condition ORDER BY r.id DESC";
+        $sql = "SELECT r.id, r.name FROM roles r ORDER BY r.id DESC";
 
        	$query = $db->prepare($sql);
 
@@ -197,7 +198,6 @@ class MySQLRoleModel implements IRoleModel
 		if ($query->execute()) {
 			header('HTTP/1.0 200 OK', http_response_code(200));
 
-			$response = [];
 			$response['message'] = 'Готово';
 
 			echo json_encode($response);

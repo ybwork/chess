@@ -78,7 +78,7 @@ class TotalAreaController
 	{
 		$this->validator->check_request($_POST);
 
-		$data['total_area'] = $_POST['total_area'];
+		$data['total_area'] = (int) $_POST['total_area'];
 		
 		$this->model->create($data);
 	}
@@ -110,7 +110,7 @@ class TotalAreaController
 		$this->validator->check_request($_POST);
 
 		$data['id'] = (int) $_POST['id'];
-		$data['total_area'] = $_POST['total_area'];
+		$data['total_area'] = (int) $_POST['total_area'];
 
 		$this->model->update($data);
 	}

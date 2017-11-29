@@ -5,7 +5,9 @@
 		<form class="auth" action="/login/user" method="POST">
 			<img src="/public/image/logo/inpk_logo.svg">
 			
-			<p class="error" style="display: none"></p>
+			<div class="error-block">
+				<p class="error" style="display: none"></p>
+			</div>
 
 			<div class="login-field-group">
 				<img src="/public/image/icon/login/user.png">

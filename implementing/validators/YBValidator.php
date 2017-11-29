@@ -28,31 +28,56 @@ class YBValidator implements IValidator
 	 * @param $value - string for cleaning
 	 * @return clean value
 	 */
+	// public function clean($value)
+	// {
+	// 	if (is_string($value)) {	
+	// 		if (is_array($value)) {
+	// 			$result = [];
+
+	// 			$i = 0;
+	// 			foreach ($value as $val) {
+	// 				$element = trim($val);
+	// 				$element = strip_tags($element);
+	// 				$element = stripslashes($element);
+	// 				$result[$i] = $element;
+
+	// 				$i++;
+	// 			}
+	// 		} else {		
+	// 			$result = trim($value);
+	// 			$result = strip_tags($result);
+	// 			$result = stripslashes($result);
+	// 		}
+
+	// 		return $result;
+	// 	} else {
+	// 		return $value;
+	// 	}
+	// }
+
 	public function clean($value)
 	{
-		if (is_string($value)) {	
-			if (is_array($value)) {
-				$result = [];
+		if (is_string($value)) {
+			$result = trim($value);
+			$result = strip_tags($result);
+			$result = stripslashes($result);
+		} elseif (is_array($value)) {
+			$result = [];
 
-				$i = 0;
-				foreach ($value as $val) {
-					$element = trim($val);
-					$element = strip_tags($element);
-					$element = stripslashes($element);
-					$result[$i] = $element;
+			$i = 0;
+			foreach ($value as $val) {
+				$element = trim($val);
+				$element = strip_tags($element);
+				$element = stripslashes($element);
+				$result[$i] = $element;
 
-					$i++;
-				}
-			} else {		
-				$result = trim($value);
-				$result = strip_tags($result);
-				$result = stripslashes($result);
+				$i++;
 			}
-
-			return $result;
 		} else {
 			return $value;
 		}
+
+		return $result;
 	}
 
 	/**

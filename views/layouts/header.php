@@ -1,3 +1,10 @@
+<?php
+  function dd($dump) {
+    highlight_string("<?php\n\$data =\n" . print_r($dump, true) . ";\n?>");
+    die();
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,6 +16,7 @@
     
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&amp;subset=cyrillic" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="/public/css/app.css.php?<?php print filemtime(ROOT . '/public/css/app.css.php'); ?>">
+    <link type="text/css" rel="stylesheet" href="/public/plugins/fontawesome/css/font-awesome.min.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

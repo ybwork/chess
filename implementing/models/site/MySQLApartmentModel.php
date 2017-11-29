@@ -78,6 +78,7 @@ class MySQLApartmentModel implements IApartmentModel
 			$query->bindValue(':phone', $data['phone'], \PDO::PARAM_STR);
 			$query->bindValue(':email', $data['email'], \PDO::PARAM_STR);
 			$query->execute();
+			$buyer_id = (int) $db->lastInsertId();
 
 			$sql = 'SELECT id FROM apartments WHERE num = :num';
 			$query = $db->prepare($sql);
@@ -89,7 +90,6 @@ class MySQLApartmentModel implements IApartmentModel
 
 			$sql = 'INSERT INTO purchased_apartments (buyer_id, seller_id, apartment_id) VALUES (:buyer_id, :seller_id, :apartment_id)';
 			$query = $db->prepare($sql);
-			$buyer_id = (int) $db->lastInsertId();
 			$seller_id = (int) $_SESSION['user'];
 			$query->bindValue(':buyer_id', $buyer_id, \PDO::PARAM_INT);
 			$query->bindValue(':seller_id', $seller_id, \PDO::PARAM_INT);

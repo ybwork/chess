@@ -1,31 +1,36 @@
 <?php require_once(ROOT . '/views/layouts/header.php'); ?>
 	<div class="grid-content">
-		<div class="main__content">
+		<div class="main__content main-padding">
 			<?php if (count($dealings) > 0): ?>
-				<?php foreach ($dealings as $deal): ?>
-					<label>Номер квартиры</label>
-					<p><?php print $deal['num']; ?></p>
-					<label>Имя продавца</label>
-					<p><?php print $deal['seller_name']; ?></p>
-					<label>Фамилия продавца</label>
-					<p><?php print $deal['seller_surname']; ?></p>
-					<label>Отчество продавца</label>
-					<p><?php print $deal['seller_patronymic']; ?></p>
-					<label>Телефон продавца</label>
-					<p><?php print $deal['seller_phone']; ?></p>
-					<label>Имя покупателя</label>
-					<p><?php print $deal['buyer_name']; ?></p>
-					<label>Фамилия покупателя</label>
-					<p><?php print $deal['buyer_surname']; ?></p>
-					<label>Телефон покупателя</label>
-					<p><?php print $deal['buyer_phone']; ?></p>
-					<label>Дата создания</label>
-					<p><?php print $deal['time_purchase']; ?></p>
-					<br>
-					<br>
-					<br>
-					<br>
-				<?php endforeach; ?>
+				<div class="col table seller-table">
+					<table>
+						<thead>
+							<tr>
+								<th>Номер квартиры</th>
+								<th>Имя продавца</th>
+								<th>Фамилия продавца</th>
+								<th>Отчество продавца</th>
+								<th>Телефон продавца</th>
+								<th>Имя покупателя</th>
+								<th>Фамилия покупателя</th>
+								<th>Телефон покупателя</th>
+								<th>Дата создания</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ($dealings as $deal): ?>
+								<tr>
+									<td><?php print $deal['num']; ?></td>
+									<td><?php print $deal['seller_name']; ?></td>
+									<td><?php print $deal['seller_surname']; ?></td>
+									<td><?php print $deal['seller_patronymic']; ?></td>
+									<td><?php print $deal['seller_phone']; ?></td>
+									<td><?php print $deal['buyer_name']; ?></td>
+									<td><?php print $deal['buyer_surname']; ?></td>
+									<td><?php print $deal['buyer_phone']; ?></td>
+									<td><?php print $deal['time_purchase']; ?></td>
+								</tr>
+							<?php endforeach; ?>
 				
 				<?php 
 					// Раскомментировать, когда появиться js для пагинации

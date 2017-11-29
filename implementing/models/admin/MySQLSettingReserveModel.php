@@ -55,8 +55,8 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 	public function create(array $data)
 	{
         $data = $this->validator->validate($data, [
-            'realtor' => 'Риэлтор|empty|is_integer}length_integer',
-            'manager' => 'Менеджер|empty|is_integer}length_integer',
+            'realtor' => 'Риэлтор|empty|is_integer|length_integer',
+            'manager' => 'Менеджер|empty|is_integer|length_integer',
         ]);
 
 		$db = $this->db_connection->get_connection();
@@ -114,8 +114,8 @@ class MySQLSettingReserveModel implements ISettingReserveModel
 	public function update(array $data)
 	{
         $data = $this->validator->validate($data, [
-            'realtor' => 'Риэлтор|empty|is_integer}length_integer',
-            'manager' => 'Менеджер|empty|is_integer}length_integer',
+            'realtor' => 'Риэлтор|empty|is_integer|length_integer',
+            'manager' => 'Менеджер|empty|is_integer|length_integer',
         ]);
 
 		$db = $this->db_connection->get_connection();

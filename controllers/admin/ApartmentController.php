@@ -91,8 +91,57 @@ class ApartmentController
 			$this->paginator->set_params($total, $page, $limit, $index);
 		*/
 
-		$apartments = $this->model->get_all();
+		// $apartments = $this->model->get_all();
 
+        $old_apartments = $this->model->get_all();
+        var_dump($old_apartments); die();
+        $apartments = [];
+        $i = 0;
+        foreach ($old_apartments as $old_apartment) {
+            $new_apartment_windows = [];
+
+            if ($old_apartment['windows']) {            
+                $apartment_windows = explode(', ', $old_apartment['windows']);
+
+                $count = 0;
+                foreach ($apartment_windows as $apartment_window) {
+                    $parts_apartment_windows = explode('-', $apartment_window);
+                    $new_apartment_windows[$count]['id'] = $parts_apartment_windows[0];
+                    $new_apartment_windows[$count]['name'] = $parts_apartment_windows[1];
+                    $count++;
+                }
+            }
+
+			$new_apartment_glazings = [];
+
+            if ($old_apartment['glazings']) {
+                $apartment_glazings = explode(', ', $old_apartment['glazings']);
+
+                $count = 0;
+                foreach ($apartment_glazings as $apartment_glazing) {
+                    $parts_apartment_glazings = explode('-', $apartment_glazing);
+                    $new_apartment_glazings[$count]['id'] = $parts_apartment_glazings[0];
+                    $new_apartment_glazings[$count]['name'] = $parts_apartment_glazings[1];
+                    $count++;
+                }	
+            }
+
+            $apartments[$i]['id'] = $old_apartment['id'];
+            $apartments[$i]['type_id'] = $old_apartment['type_id'];
+            $apartments[$i]['type'] = $old_apartment['type'];
+            $apartments[$i]['total_area_id'] = $old_apartment['total_area_id'];
+            $apartments[$i]['total_area'] = $old_apartment['total_area'];
+            $apartments[$i]['factual_area'] = $old_apartment['factual_area'];
+            $apartments[$i]['floor'] = $old_apartment['floor'];
+            $apartments[$i]['num'] = $old_apartment['num'];
+            $apartments[$i]['price'] = $old_apartment['price'];
+            $apartments[$i]['discount'] = $old_apartment['discount'];
+            $apartments[$i]['status'] = $old_apartment['status'];
+            $apartments[$i]['windows'] = $new_apartment_windows;
+            $apartments[$i]['glazings'] = $new_apartment_glazings;
+            $i++;
+        }
+        // var_dump($apartments); die();
 		require_once(ROOT . '/views/admin/apartment/index.php');
 		return true;
 	}
@@ -104,17 +153,18 @@ class ApartmentController
 	 */
 	public function create()
 	{
+		// var_dump($_POST); die();
 		$this->validator->check_request($_POST);
 
 		$data['type_id'] = (int) $_POST['type_id'];
 		$data['total_area_id'] = (int) $_POST['total_area_id'];
-		$data['factual_area'] = $_POST['factual_area'];
+		$data['factual_area'] = (int) $_POST['factual_area'];
 		$data['floor'] = (int) $_POST['floor'];
 		$data['num'] = (int) $_POST['num'];
 		$data['price'] = (int) $_POST['price'];
 		$data['discount'] = (int) $_POST['discount'];
 		$data['status'] = (int) $_POST['status'];
-		$data['windows'] = $this->helper->get_select2_value('window', $_POST);
+		$data['windows'] = $this->helper->get_checkbox_value('window', $_POST);
 		$data['glazings'] = $this->helper->get_checkbox_value('glazing', $_POST);
 		
 		$apartment_exists = $this->model->check_exists($data['num']);
@@ -168,13 +218,13 @@ class ApartmentController
 		$data['id'] = (int) $_POST['id'];
 		$data['type_id'] = (int) $_POST['type_id'];
 		$data['total_area_id'] = (int) $_POST['total_area_id'];
-		$data['factual_area'] = $_POST['factual_area'];
+		$data['factual_area'] = (int) $_POST['factual_area'];
 		$data['floor'] = (int) $_POST['floor'];
 		$data['num'] = (int) $_POST['num'];
 		$data['price'] = (int) $_POST['price'];
 		$data['discount'] = (int) $_POST['discount'];
 		$data['status'] = (int) $_POST['status'];
-		$data['windows'] = $this->helper->get_select2_value('window', $_POST);
+		$data['windows'] = $this->helper->get_checkbox_value('window', $_POST);
 		$data['glazings'] = $this->helper->get_checkbox_value('glazing', $_POST);
 
 		$this->model->update($data);
