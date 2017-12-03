@@ -52,17 +52,6 @@ class Glazing
 	}
 
 	/**
-	 * Show glazing
-	 *
-	 * @param $id - glazing id
-	 * @return result of the function show
-	 */
-	public function show(int $id)
-	{
-		return $this->model->show($id);
-	}
-
-	/**
 	 * Updates glazing
 	 *
 	 * @param $data - new data glazing

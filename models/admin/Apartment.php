@@ -41,16 +41,6 @@ class Apartment
 	}
 
 	/**
-	 * Gets all apartments with status 1
-	 *
-	 * @return result of the function get_available
-	 */
-	public function get_available()
-	{
-		return $this->model->get_available();
-	}
-
-	/**
 	 * Creates aparment
 	 *
 	 * @param $data - data apartment
@@ -59,17 +49,6 @@ class Apartment
 	public function create(array $data)
 	{
 		return $this->model->create($data);
-	}
-
-	/**
-	 * Show apartment
-	 *
-	 * @param $id - aparment id
-	 * @return result of the function show
-	 */
-	public function show(int $id)
-	{
-		return $this->model->show($id);
 	}
 
 	/**

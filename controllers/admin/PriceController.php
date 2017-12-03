@@ -27,7 +27,7 @@ class PriceController
 		$this->validator->set_validator(new YBValidator);
 		$this->validator->check_auth();
 
-        $roles = ['admin'];
+        $roles = ['admin', 'manager'];
         $this->validator->check_access($roles);
 
 		$this->model = new Price();

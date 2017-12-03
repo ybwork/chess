@@ -52,17 +52,6 @@ class Window
 	}
 
 	/**
-	 * Show window
-	 *
-	 * @param $id - window id
-	 * @return result of the function show
-	 */
-	public function show(int $id)
-	{
-		return $this->model->show($id);
-	}
-
-	/**
 	 * Updates window
 	 *
 	 * @param $data - new data window

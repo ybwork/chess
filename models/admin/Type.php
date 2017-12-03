@@ -52,17 +52,6 @@ class Type
 	}
 
 	/**
-	 * Show type
-	 *
-	 * @param $id - type id
-	 * @return result of the function show
-	 */
-	public function show(int $id)
-	{
-		return $this->model->show($id);
-	}
-
-	/**
 	 * Updates type
 	 *
 	 * @param $data - new data type

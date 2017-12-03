@@ -64,7 +64,7 @@ class DealController
 		*/
 
 		$dealings = $this->model->get_all();
-		// var_dump($dealings); die();
+
 		require_once(ROOT . '/views/admin/deal/index.php');
 		return true;
 	}

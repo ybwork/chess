@@ -40,17 +40,6 @@ class SettingReserve
 	}
 
 	/**
-	 * Show setting reserve
-	 *
-	 * @param $id - setting reserve id
-	 * @return result of the function show
-	 */
-	public function show(int $id)
-	{
-		return $this->model->show($id);
-	}
-
-	/**
 	 * Updates setting reserve
 	 *
 	 * @param $data - new data setting reserve

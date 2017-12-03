@@ -51,17 +51,6 @@ class User
     }
 
     /**
-     * Show user
-     *
-     * @param $id - user id
-     * @return result of the function show
-     */
-    public function show(int $id)
-    {
-        return $this->model->show($id);
-    }
-
-    /**
      * Updates user
      *
      * @param $data - new data user

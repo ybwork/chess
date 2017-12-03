@@ -52,17 +52,6 @@ class Role
 	}
 
 	/**
-	 * Show role
-	 *
-	 * @param $id - role id
-	 * @return result of the function show
-	 */
-	public function show(int $id)
-	{
-		return $this->model->show($id);
-	}
-
-	/**
 	 * Updates role
 	 *
 	 * @param $data - new data role

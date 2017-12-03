@@ -5,8 +5,8 @@
 		<div class="row main-padding">
 			<div class="col create-form">
 				<form class="common-ajax-form nice-form form-add" action="/admin/settings/reserve/create" method="POST">
-					<input placeholder="Бронь для риэлтора на (кол-во дней)" type="number" name="realtor" value="">
-					<input placeholder="Бронь для менеджера на (кол-во дней)" type="number" name="manager" value="">
+					<input placeholder="Риэлтор" type="number" name="realtor" value="">
+					<input placeholder="Менеджер" type="number" name="manager" value="">
 					<button class="btn-default" type="submit">Создать</button>
 				</form>
 			</div>

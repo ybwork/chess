@@ -84,23 +84,6 @@ class TotalAreaController
 	}
 
 	/**
-	 * Collects data for selected total area
-	 *
-	 * @return data in json
-	 */
-	public function edit()
-	{
-		$id = (int) $this->helper->get_id();
-		$total_area = $this->model->show($id);
-
-		$response['id'] = (int) $total_area['id'];
-		$response['total_area'] = $total_area['total_area'];
-
-		echo json_encode($response);
-		return true;
-	}
-
-	/**
 	 * Collects data for update total area
 	 *
 	 * @return json and/or http header with status code

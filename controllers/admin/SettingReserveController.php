@@ -64,24 +64,6 @@ class SettingReserveController
 	}
 
 	/**
-	 * Collects data for selected setting
-	 *
-	 * @return data in json
-	 */
-	public function edit()
-	{
-		$id = (int) $this->helper->get_id();
-		$settings = $this->model->show($id);
-
-		$response['id'] = (int) $settings['id'];
-		$response['realtor'] = $settings['realtor'];
-		$response['manager'] = $settings['manager'];
-
-		echo json_encode($response);
-		return true;
-	}
-
-	/**
 	 * Collects data for update setting
 	 *
 	 * @return json and/or http header with status code

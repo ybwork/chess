@@ -52,17 +52,6 @@ class TotalArea
 	}
 
 	/**
-	 * Show total area
-	 *
-	 * @param $id - total area id
-	 * @return result of the function show
-	 */
-	public function show(int $id)
-	{
-		return $this->model->show($id);
-	}
-
-	/**
 	 * Updates total area
 	 *
 	 * @param $data - new data total area

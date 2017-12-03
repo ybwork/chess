@@ -389,7 +389,7 @@ function updateSidebar() {
     }
 
     $("#floorInfo #floorMapSchema .floor-schema").attr("src", "/../../public/image/flats/floor/walls" + whatFloor + ".png");
-    console.log(action, data);
+
     $.ajax({
       url: action,
       data: data,
@@ -458,7 +458,7 @@ function updateSidebar() {
                 var response = $.parseJSON(data);
                 var buyerId;
 
-                if ((response['status'] == 'success') && (userRole == 3)) {
+                if ((response['status'] == 'success') && (userRole == 2)) {
                   var buyerId = response.id;
 
                   $('body').addClass('get-buy-panel');
@@ -468,9 +468,9 @@ function updateSidebar() {
                   $('input[name="surname"]').val('' + response.surname + '');
                   $('input[name="phone"]').val('' + response.phone + '');
                   $('input[name="email"]').val('' + response.email + '');
-                } else if ((response['status'] == 'success') && (userRole == 4)) {
+                } else if ((response['status'] == 'success') && (userRole == 3)) {
 
-                  if ((response['status'] == 'success') && (reservator == response[0].reservator_id)) {
+                  if ((response['status'] == 'success') && (reservator == response.seller_id)) {
                     var buyerId = response.id;
 
                     $('body').addClass('get-buy-panel');
@@ -482,6 +482,18 @@ function updateSidebar() {
                     $('input[name="email"]').val('' + response.email + '');
                   }
 
+                } else if ((response['status'] == 'success') && (userRole == 1)) {
+                  if ((response['status'] == 'success') && (reservator == response.seller_id)) {
+                    var buyerId = response.id;
+
+                    $('body').addClass('get-buy-panel');
+                    $('.button-reserve.remove-reserve').removeAttr('disabled');
+                    $('input[name="buyer_id"]').val('' + buyerId + '');
+                    $('input[name="name"]').val('' + response.name + '');
+                    $('input[name="surname"]').val('' + response.surname + '');
+                    $('input[name="phone"]').val('' + response.phone + '');
+                    $('input[name="email"]').val('' + response.email + '');
+                  }
                 } else if ((response['status'] == 'fail_amo') && (userRole == 3)) {
 
                   $('body').removeClass('get-buy-panel');
@@ -972,20 +984,22 @@ function updateSidebar() {
   function isValid(form) {
     var clean = true;
     form.find('input[type="text"], input[type="number"]').each(function() {
-      if($(this).val() == '') {
-        $(this).addClass('err');
-        $('<span class="err-msg">Поле не может быть пустым</span>').insertBefore($(this));
-        clean = false;
-      }
-      if($(this).val().length > 255) {
-        $(this).addClass('err');
-        $('<span class="err-msg">Поле должно быть меньше 255 символов</span>').insertBefore($(this));
-        clean = false;
-      }
-      if($(this).attr('type') == 'number' && $(this).val().length > 11) {
-        $(this).addClass('err');
-        $('<span class="err-msg">Поле должно быть меньше 11 символов</span>').insertBefore($(this));
-        clean = false;
+      if($(this).attr('name') != 'discount') {
+        if($(this).val() == '') {
+          $(this).addClass('err');
+          $('<span class="err-msg">Поле не может быть пустым</span>').insertBefore($(this));
+          clean = false;
+        }
+        if($(this).val().length > 255) {
+          $(this).addClass('err');
+          $('<span class="err-msg">Поле должно быть меньше 255 символов</span>').insertBefore($(this));
+          clean = false;
+        }
+        if($(this).attr('type') == 'number' && $(this).val().length > 11) {
+          $(this).addClass('err');
+          $('<span class="err-msg">Поле должно быть меньше 11 символов</span>').insertBefore($(this));
+          clean = false;
+        }
       }
     });
     return clean;
@@ -1006,6 +1020,9 @@ function updateSidebar() {
     });
   }
 
+  if(window.location.pathname != '/') {
+    $(document).find('.menu-item').addClass('hack');
+  }
 
   /********************************************************End code by Vit********************************************************/
 });

@@ -83,23 +83,6 @@ class WindowController
 	}
 
 	/**
-	 * Collects data for selected window
-	 *
-	 * @return data in json
-	 */
-	public function edit()
-	{
-		$id = (int) $this->helper->get_id();
-		$window = $this->model->show($id);
-
-		$response['id'] = (int) $window['id'];
-		$response['name'] = $window['name'];
-
-		echo json_encode($response);
-		return true;
-	}
-
-	/**
 	 * Collects data for update window
 	 *
 	 * @return json and/or http header with status code

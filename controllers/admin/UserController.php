@@ -109,29 +109,6 @@ class UserController
 	}
 
     /**
-     * Collects data for selected user
-     *
-     * @return data in json
-     */
-    public function edit()
-    {
-        $id = (int) $this->helper->get_id();
-        $user = $this->model->show($id);
-
-        $response['id'] = (int) $user['id'];
-        $response['login'] = $user['login'];
-        $response['name'] = $user['name'];
-        $response['surname'] = $user['surname'];
-        $response['patronymic'] = $user['patronymic'];
-        $response['phone'] = $user['phone'];
-        $response['role_id'] = $user['role_id'];
-        $response['role_name'] = $user['role_name'];
-
-        echo json_encode($response);
-        return true;
-    }
-
-    /**
      * Collects data for update user
      *
      * @return status code

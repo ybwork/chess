@@ -87,23 +87,6 @@ class TypeController
 	}
 
 	/**
-	 * Collects data for selected type
-	 *
-	 * @return data in json
-	 */
-	public function edit()
-	{
-		$id = (int) $this->helper->get_id();
-		$type = $this->model->show($id);
-
-		$response['id'] = (int) $type['id'];
-		$response['type'] = $type['type'];
-
-		echo json_encode($response);
-		return true;
-	}
-
-	/**
 	 * Collects data for update type
 	 *
 	 * @return json and/or http header with status code

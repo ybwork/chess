@@ -47,7 +47,6 @@ class GlazingController
 	 */
 	public function index()
 	{
-
 		/*
 			Заменить обычный вывод, когда появится js
 
@@ -82,23 +81,6 @@ class GlazingController
 		$data['name'] = $_POST['name'];
 		
 		$this->model->create($data);
-	}
-
-	/**
-	 * Collects data for selected glazing
-	 *
-	 * @return data in json
-	 */
-	public function edit()
-	{
-		$id = (int) $this->helper->get_id();
-		$glazing = $this->model->show($id);
-
-		$response['id'] = (int) $glazing['id'];
-		$response['name'] = $glazing['name'];
-
-		echo json_encode($response);
-		return true;
 	}
 
 	/**

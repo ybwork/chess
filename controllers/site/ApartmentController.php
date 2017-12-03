@@ -51,6 +51,7 @@ class ApartmentController
 	public function index()
 	{
 		$condition = $_GET['operator'] . $_GET['field'] . $_GET['symbol'] . $_GET['floor'];
+
 		$apartments = $this->model->get_all($condition);
 
 		$response = [];

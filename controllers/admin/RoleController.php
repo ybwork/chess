@@ -84,23 +84,6 @@ class RoleController
 	}
 
 	/**
-	 * Collects data for selected role
-	 *
-	 * @return data in json
-	 */
-	public function edit()
-	{
-		$id = (int) $this->helper->get_id();
-		$role = $this->model->show($id);
-
-		$response['id'] = (int) $role['id'];
-		$response['name'] = $role['name'];
-
-		echo json_encode($response);
-		return true;
-	}
-
-	/**
 	 * Collects data for update role
 	 *
 	 * @return json and/or http header with status code

@@ -65,17 +65,39 @@ class ApartmentController
 	}
 
 	/**
+	 * Transform string multiple data
+	 *
+	 * @param $data - array data apartment
+	 * @param $multiple - multiple field name
+	 * @return $new_multiple_values - array multiple values for selected field
+	 */
+	public function transform_multiple_data(array $data, string $multiple)
+	{
+        $new_multiple_values = [];
+  	
+       	if ($data[$multiple]) {
+	        $multiple_values = explode(', ', $data[$multiple]);
+
+	        $i = 0;
+	        foreach ($multiple_values as $multiple_value) {
+	        	$values = explode('-', $multiple_value);
+
+	            $new_multiple_values[$i]['id'] = $values[0];
+	            $new_multiple_values[$i]['name'] = $values[1];
+	        	$i++;
+	        }
+       	}
+
+        return $new_multiple_values;
+	}
+
+	/**
 	 * Shows all apartments
 	 *
 	 * @return html view
 	 */
 	public function index()
 	{
-		$types = $this->type->get_all();
-		$total_areas = $this->total_areas->get_all();
-		$windows = $this->window->get_all();
-		$glazings = $this->glazing->get_all();
-
 		/*
 			Заменить обычный вывод, когда появится js
 
@@ -91,41 +113,12 @@ class ApartmentController
 			$this->paginator->set_params($total, $page, $limit, $index);
 		*/
 
-		// $apartments = $this->model->get_all();
+        $apartments = [];
 
         $old_apartments = $this->model->get_all();
-        var_dump($old_apartments); die();
-        $apartments = [];
+
         $i = 0;
         foreach ($old_apartments as $old_apartment) {
-            $new_apartment_windows = [];
-
-            if ($old_apartment['windows']) {            
-                $apartment_windows = explode(', ', $old_apartment['windows']);
-
-                $count = 0;
-                foreach ($apartment_windows as $apartment_window) {
-                    $parts_apartment_windows = explode('-', $apartment_window);
-                    $new_apartment_windows[$count]['id'] = $parts_apartment_windows[0];
-                    $new_apartment_windows[$count]['name'] = $parts_apartment_windows[1];
-                    $count++;
-                }
-            }
-
-			$new_apartment_glazings = [];
-
-            if ($old_apartment['glazings']) {
-                $apartment_glazings = explode(', ', $old_apartment['glazings']);
-
-                $count = 0;
-                foreach ($apartment_glazings as $apartment_glazing) {
-                    $parts_apartment_glazings = explode('-', $apartment_glazing);
-                    $new_apartment_glazings[$count]['id'] = $parts_apartment_glazings[0];
-                    $new_apartment_glazings[$count]['name'] = $parts_apartment_glazings[1];
-                    $count++;
-                }	
-            }
-
             $apartments[$i]['id'] = $old_apartment['id'];
             $apartments[$i]['type_id'] = $old_apartment['type_id'];
             $apartments[$i]['type'] = $old_apartment['type'];
@@ -137,11 +130,16 @@ class ApartmentController
             $apartments[$i]['price'] = $old_apartment['price'];
             $apartments[$i]['discount'] = $old_apartment['discount'];
             $apartments[$i]['status'] = $old_apartment['status'];
-            $apartments[$i]['windows'] = $new_apartment_windows;
-            $apartments[$i]['glazings'] = $new_apartment_glazings;
+            $apartments[$i]['windows'] = $this->transform_multiple_data($old_apartment, 'windows');
+            $apartments[$i]['glazings'] = $this->transform_multiple_data($old_apartment, 'glazings');
             $i++;
         }
-        // var_dump($apartments); die();
+
+        $types = $this->type->get_all();
+		$total_areas = $this->total_areas->get_all();
+		$windows = $this->window->get_all();
+		$glazings = $this->glazing->get_all();
+
 		require_once(ROOT . '/views/admin/apartment/index.php');
 		return true;
 	}
@@ -153,7 +151,6 @@ class ApartmentController
 	 */
 	public function create()
 	{
-		// var_dump($_POST); die();
 		$this->validator->check_request($_POST);
 
 		$data['type_id'] = (int) $_POST['type_id'];
@@ -178,32 +175,6 @@ class ApartmentController
 		} else {
 			$this->model->create($data);
 		}
-	}
-
-	/**
-	 * Collects data for selected apartment
-	 *
-	 * @return data in json
-	 */
-	public function edit()
-	{
-		$id = (int) $this->helper->get_id();
-		$apartment = $this->model->show($id);
-
-		$response['id'] = (int) $apartment['id'];
-		$response['type_id'] = (int) $apartment['type_id'];
-		$response['total_area_id'] = (int) $apartment['total_area_id'];
-		$response['factual_area'] = $apartment['factual_area'];
-		$response['floor'] = (int) $apartment['floor'];
-		$response['num'] = (int) $apartment['num'];
-		$response['price'] = (int) $apartment['price'];
-		$response['discount'] = (int) $apartment['discount'];
-		$response['status'] = (int) $apartment['status'];
-		$response['windows'] = $apartment['windows'];
-		$response['glazings'] = $apartment['glazings'];
-
-		echo json_encode($response);
-		return true;
 	}
 
 	/**

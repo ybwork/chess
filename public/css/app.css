@@ -1483,7 +1483,7 @@ loader.loading .circle-loader.failed .checkmark:before {
   padding: 0 20px;
 }
 #floorInfo #flatInfo .flat-price .btn {
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -1849,6 +1849,7 @@ loader.loading .circle-loader.failed .checkmark:before {
   margin-top: 15px;
   color: #fff;
   text-align: center;
+  color: red;
 }
 .success {
   background: #30b22d;
@@ -2020,4 +2021,23 @@ input.err {
 }
 .seller-table td {
   min-width: 150px;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#reserve-lead div.error {
+  position: relative;
+  padding: 0px;
+  margin-top: 0px;
+  text-align: left;
+}
+#reserve-lead .error-message {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.navigation-panel .navigation-items .menu-item.hack {
+  opacity: 0 !important;
 }

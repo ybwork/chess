@@ -28,33 +28,6 @@ class YBValidator implements IValidator
 	 * @param $value - string for cleaning
 	 * @return clean value
 	 */
-	// public function clean($value)
-	// {
-	// 	if (is_string($value)) {	
-	// 		if (is_array($value)) {
-	// 			$result = [];
-
-	// 			$i = 0;
-	// 			foreach ($value as $val) {
-	// 				$element = trim($val);
-	// 				$element = strip_tags($element);
-	// 				$element = stripslashes($element);
-	// 				$result[$i] = $element;
-
-	// 				$i++;
-	// 			}
-	// 		} else {		
-	// 			$result = trim($value);
-	// 			$result = strip_tags($result);
-	// 			$result = stripslashes($result);
-	// 		}
-
-	// 		return $result;
-	// 	} else {
-	// 		return $value;
-	// 	}
-	// }
-
 	public function clean($value)
 	{
 		if (is_string($value)) {
@@ -229,8 +202,8 @@ class YBValidator implements IValidator
     {
     	$roles_values = [
     		'admin' => 1,
-    		'manager' => 3,
-    		'realtor' => 4
+    		'manager' => 2,
+    		'realtor' => 3
     	];
 
 		$arr_compare_roles = [];
